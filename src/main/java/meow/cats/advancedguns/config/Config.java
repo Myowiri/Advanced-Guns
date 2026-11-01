@@ -1,4 +1,4 @@
-package meow.cats.advancedguns;
+package meow.cats.advancedguns.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -13,10 +13,10 @@ public class Config {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final File CONFIG_FILE = new File(FabricLoader.getInstance().getConfigDir().toFile(), "advancedguns.json");
 
-    public static WeaponConfig ak47 = new WeaponConfig(35.0f, 13.0f, 0.0085f, 0.99f, 30, 45, 2, false, ".7,62x39");
-    public static WeaponConfig rpg = new WeaponConfig(4.5f, 35.0f, 0.008f, 0.995f, 1, 70, 10, false, ".rpg_rocket");
-    public static WeaponConfig awm = new WeaponConfig(47.0f, 30.0f, 0.0085f, 0.99f, 5, 70, 25, true, ".7,62×67");
-    public static WeaponConfig glock17 = new WeaponConfig(15.0f, 10.0f, 0.0245f, 0.99f, 17, 30, 10, false, ".9×19");
+    public static WeaponConfig ak47 = new WeaponConfig(35.0f, 13.0f, 0.0085f, 0.99f, 30, 45, 2);
+    public static WeaponConfig rpg = new WeaponConfig(4.5f, 35.0f, 0.008f, 0.995f, 1, 70, 10);
+    public static WeaponConfig awm = new WeaponConfig(47.0f, 30.0f, 0.0085f, 0.99f, 5, 70, 25);
+    public static WeaponConfig glock17 = new WeaponConfig(15.0f, 10.0f, 0.0245f, 0.99f, 17, 30, 10);
 
     private WeaponConfig ak_47;
     private WeaponConfig rpg_launcher;
@@ -31,10 +31,8 @@ public class Config {
         public int maxMag;
         public int reloadCooldown;
         public int shotCooldown;
-        public boolean hasScope;
-        public String caliber;
 
-        public WeaponConfig(float speed, float damage, float gravity, float resistance, int maxMag, int reloadCooldown, int shotCooldown, boolean hasScope, String caliber) {
+        public WeaponConfig(float speed, float damage, float gravity, float resistance, int maxMag, int reloadCooldown, int shotCooldown) {
             this.speed = speed;
             this.damage = damage;
             this.gravity = gravity;
@@ -42,9 +40,14 @@ public class Config {
             this.maxMag = maxMag;
             this.reloadCooldown = reloadCooldown;
             this.shotCooldown = shotCooldown;
-            this.hasScope = hasScope;
-            this.caliber = caliber;
         }
+        public float getSpeed() { return speed; }
+        public float getDamage() { return damage; }
+        public float getGravity() { return gravity; }
+        public float getResistance() { return resistance; }
+        public int getMaxMag() { return maxMag; }
+        public int getReloadCooldown() { return reloadCooldown; }
+        public int getShotCooldown() { return shotCooldown; }
     }
 
     public static void load() {

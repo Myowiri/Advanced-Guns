@@ -1,6 +1,7 @@
 package meow.cats;
 
-import meow.cats.advancedguns.Config;
+import meow.cats.advancedguns.config.Config;
+import meow.cats.advancedguns.config.ModCommands;
 import meow.cats.advancedguns.event.EventManager;
 import meow.cats.advancedguns.items.GunItem;
 import meow.cats.advancedguns.items.ModItems;
@@ -43,6 +44,7 @@ public class Weapons implements ModInitializer, ClientModInitializer {
 				}
 			});
 		});
+		ModCommands.register();
 		Config.load();
 		sounds.load();
 		ModItems.initialize();

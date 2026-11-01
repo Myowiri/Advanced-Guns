@@ -40,7 +40,7 @@ public class EventManager  {
             net.minecraft.world.item.ItemStack handStack = player.getMainHandItem();
             if (handStack.getItem() instanceof GunItem gun) {
                 int currentAmmo = gun.getAmmoCount(handStack);
-                int maxAmmo = gun.maxMag;
+                int maxAmmo = gun.getMaxMag();
 
                 String messageText = currentAmmo + " / " + maxAmmo;
                 player.sendOverlayMessage(Component.literal(messageText));
