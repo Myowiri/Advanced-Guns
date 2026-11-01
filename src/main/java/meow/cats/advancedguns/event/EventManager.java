@@ -4,6 +4,7 @@ package meow.cats.advancedguns.event;
 import meow.cats.Weapons;
 import meow.cats.advancedguns.event.impl.TickEvent;
 import meow.cats.advancedguns.items.GunItem;
+import meow.cats.advancedguns.items.MagazineItem;
 import meow.cats.advancedguns.misc.ClientKeys;
 import meow.cats.advancedguns.network.ReloadPayload;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -31,7 +32,7 @@ public class EventManager  {
 
     public void updateBinds(LocalPlayer player){
         if (ClientKeys.RELOAD_BIND.consumeClick()) {
-            if (player.getMainHandItem().getItem() instanceof GunItem) {
+            if (player.getMainHandItem().getItem() instanceof GunItem || player.getMainHandItem().getItem() instanceof MagazineItem) {
                 ClientPlayNetworking.send(new ReloadPayload());
             }
         }
@@ -40,7 +41,7 @@ public class EventManager  {
             net.minecraft.world.item.ItemStack handStack = player.getMainHandItem();
             if (handStack.getItem() instanceof GunItem gun) {
                 int currentAmmo = gun.getAmmoCount(handStack);
-                int maxAmmo = gun.maxMag;
+                int maxAmmo = gun.getMaxMag();
 
                 String messageText = currentAmmo + " / " + maxAmmo;
                 player.sendOverlayMessage(Component.literal(messageText));

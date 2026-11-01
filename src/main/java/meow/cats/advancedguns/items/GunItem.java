@@ -1,11 +1,12 @@
 package meow.cats.advancedguns.items;
 
+import meow.cats.advancedguns.config.Config;
 import meow.cats.advancedguns.projectile.BulletEntity;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Prediction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -17,45 +18,65 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
-
 import java.util.function.Consumer;
-
 import static meow.cats.advancedguns.items.ModItems.AMMO;
-import static meow.cats.advancedguns.items.ModItems.PG7V_ROCKET;
 import static meow.cats.advancedguns.misc.sounds.MUTED_SINGLE_SHOT;
 import static meow.cats.advancedguns.misc.sounds.PISTOL_RELOAD;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class GunItem extends Item {
 
-    private final float bulletSpeed;
-    private final float bulletDamage;
-    private final float gravity;
-    private final float airResistance;
+    private final Supplier<Config.WeaponConfig> configSupplier;
+//    private final float bulletSpeed;
+//    private final float bulletDamage;
+//    private final float gravity;
+//    private final float airResistance;
     private final boolean scope;
     private final String toolTipText;
-    public final int reloadCoolDown;
-    public final int shotCoolDown;
-    public final int maxMag;
+//    public final int reloadCoolDown;
+//    public final int shotCoolDown;
+//    public final int getMaxMag();
     public final Item mag;
     @Deprecated public int ammoCount;
     public Item ammo = AMMO;
-
     public boolean explode = false;
+    private boolean noMag = false;
 
-
-    public GunItem(Properties properties, float bulletSpeed, float bulletDamage, float gravity, float airResistance, int maxMag, Item mag, int reloadCoolDown, int shotCoolDown, boolean scope,  String toolTipText) {
+//    public GunItem(Properties properties, float bulletSpeed, float bulletDamage, float gravity, float airResistance, int getMaxMag(), Item mag, int reloadCoolDown, int shotCoolDown, boolean scope,  String toolTipText) {
+//        super(properties);
+//
+//        this.bulletSpeed = bulletSpeed;
+//        this.bulletDamage = bulletDamage;
+//        this.gravity = gravity;
+//        this.airResistance = airResistance;
+//        this.getMaxMag() = getMaxMag();
+//        this.mag = mag;
+//        this.shotCoolDown = shotCoolDown;
+//        this.reloadCoolDown = reloadCoolDown;
+//        this.toolTipText = toolTipText;
+//        this.scope = scope;
+//    }
+    public GunItem(Properties properties, Supplier<Config.WeaponConfig> configSupplier, boolean hasScope, Item mag, String toolTipText) {
         super(properties);
-        this.bulletSpeed = bulletSpeed;
-        this.bulletDamage = bulletDamage;
-        this.gravity = gravity;
-        this.airResistance = airResistance;
-        this.maxMag = maxMag;
-        this.mag = mag;
-        this.shotCoolDown = shotCoolDown;
-        this.reloadCoolDown = reloadCoolDown;
+        this.configSupplier = configSupplier;
+        this.scope = hasScope;
         this.toolTipText = toolTipText;
-        this.scope = scope;
+        this.mag = mag;
     }
+
+    private Config.WeaponConfig getConfig() {
+        return this.configSupplier.get();
+    }
+
+    public float getBulletSpeed() { return getConfig().getSpeed(); }
+    public float getBulletDamage() { return getConfig().getDamage(); }
+    public float getGravity() { return getConfig().getGravity(); }
+    public float getAirResistance() { return getConfig().getResistance(); }
+    public int getMaxMag() { return getConfig().getMaxMag(); }
+    public int getShotCoolDown() { return getConfig().getShotCooldown(); }
+    public int getReloadCoolDown() { return getConfig().getReloadCooldown(); }
+
 
 
     public int getAmmoCount(ItemStack stack) {
@@ -69,6 +90,12 @@ public class GunItem extends Item {
         return 0;
     }
 
+    public void setAmmoCount(ItemStack stack, int count) {
+        CustomData.update(DataComponents.CUSTOM_DATA, stack, nbt -> {
+            nbt.putInt("AmmoCount", Math.max(0, Math.min(count, getMaxMag())));
+        });
+    }
+
     public GunItem shouldExplode(){
         this.explode = true;
         return this;
@@ -78,10 +105,10 @@ public class GunItem extends Item {
         return explode;
     }
 
-    public void setAmmoCount(ItemStack stack, int count) {
-        CustomData.update(DataComponents.CUSTOM_DATA, stack, nbt -> {
-            nbt.putInt("AmmoCount", Math.max(0, Math.min(count, maxMag)));
-        });
+
+    public GunItem removeMag(){
+        noMag = true;
+        return this;
     }
 
     public boolean hasScope(){
@@ -98,24 +125,95 @@ public class GunItem extends Item {
     }
 
 
+    public boolean hasMagRn(ItemStack stack) {
+        CustomData customData = stack.get(DataComponents.CUSTOM_DATA);
+        if (customData != null) {
+            CompoundTag nbt = customData.copyTag();
+            if (nbt.contains("Mag")) {
+                return nbt.getBoolean("Mag").get();
+            }
+        }
+        return false;
+    }
+
+    public void addOrRemoveMag(ItemStack stack, boolean bool) {
+        CustomData.update(DataComponents.CUSTOM_DATA, stack, nbt -> {
+            nbt.putBoolean("Mag", bool);
+        });
+    }
+
     public void reload(Player player, ItemStack gunStack) {
-        if(player.getCooldowns().isOnCooldown(gunStack.getItem().getDefaultInstance())) return;
+        if (player.getCooldowns().isOnCooldown(gunStack.getItem().getDefaultInstance())) return;
 
-        int currentAmmo = getAmmoCount(gunStack);
-        if (currentAmmo >= maxMag) return;
+        if (hasMagRn(gunStack)) {
+            if (!noMag) {
+                MagazineItem requiredMag = (MagazineItem) this.mag;
+                int ammoToSave = getAmmoCount(gunStack);
+                ItemStack magStack = new ItemStack(requiredMag);
+                requiredMag.setAmmoCount(magStack, ammoToSave);
+                player.drop(magStack, false, Prediction.PREDICTED);
+            } else {
+                AmmoItem requiredAmmo = (AmmoItem) this.ammo;
+                int ammoToSave = getAmmoCount(gunStack);
+                ItemStack ammoStack = new ItemStack(requiredAmmo, ammoToSave);
+                player.drop(ammoStack, false, Prediction.PREDICTED);
+            }
 
-        if (player.getAbilities().instabuild) {
-            setAmmoCount(gunStack, maxMag);
+            addOrRemoveMag(gunStack, false);
+            setAmmoCount(gunStack, 0);
+            player.sendOverlayMessage(Component.literal("0 / " + getMaxMag()));
+
+            if (player instanceof net.minecraft.server.level.ServerPlayer serverPlayer) {
+                serverPlayer.inventoryMenu.broadcastChanges();
+            }
             return;
         }
 
+        if (player.getAbilities().instabuild) {
+            setAmmoCount(gunStack, getMaxMag());
+            addOrRemoveMag(gunStack, true);
+            return;
+        }
 
+        int targetAmmo = -1;
+        boolean actionSuccessful = false;
 
-        Item requiredMag = this.mag;
-        int playerHasMag = player.getInventory().clearOrCountMatchingItems(stack -> stack.is(requiredMag), true, -1, player.inventoryMenu.getCraftSlots());
+        if (noMag) {
+            AmmoItem requiredAmmo = (AmmoItem) this.ammo;
+            int currentAmmo = getAmmoCount(gunStack);
+            int neededAmmo = getMaxMag() - currentAmmo;
 
-        if (playerHasMag > 0) {
-            player.getInventory().clearOrCountMatchingItems(stack -> stack.is(requiredMag), false, 1, player.inventoryMenu.getCraftSlots());
+            if (neededAmmo > 0) {
+                ItemStack offhandStack = player.getOffhandItem();
+
+                if (!offhandStack.isEmpty() && offhandStack.getItem() == requiredAmmo) {
+                    int take = Math.min(neededAmmo, offhandStack.getCount());
+                    offhandStack.shrink(take);
+                    if (offhandStack.isEmpty()) {
+                        player.setItemInHand(InteractionHand.OFF_HAND, ItemStack.EMPTY);
+                    }
+                    targetAmmo = currentAmmo + take;
+                    actionSuccessful = true;
+                }
+            }
+        } else {
+            MagazineItem requiredMag = (MagazineItem) this.mag;
+            ItemStack offhandStack = player.getOffhandItem();
+
+            if (!offhandStack.isEmpty() && offhandStack.getItem() == requiredMag) {
+                int a = requiredMag.getAmmoCount(offhandStack);
+                if (a >= 0) {
+                    offhandStack.shrink(1);
+                    if (offhandStack.isEmpty()) {
+                        player.setItemInHand(InteractionHand.OFF_HAND, ItemStack.EMPTY);
+                    }
+                    targetAmmo = a;
+                    actionSuccessful = true;
+                }
+            }
+        }
+
+        if (actionSuccessful) {
             player.level().playSound(
                     null,
                     player.getX(),
@@ -126,11 +224,22 @@ public class GunItem extends Item {
                     1.5f,
                     1.0f
             );
-            player.getCooldowns().addCooldown(gunStack.getItem().getDefaultInstance(), reloadCoolDown);
 
-            setAmmoCount(gunStack, maxMag);
+            player.getCooldowns().addCooldown(gunStack.getItem().getDefaultInstance(), getReloadCoolDown());
+            addOrRemoveMag(gunStack, true);
+            setAmmoCount(gunStack, targetAmmo);
+
+            if (player instanceof net.minecraft.server.level.ServerPlayer serverPlayer) {
+                serverPlayer.inventoryMenu.broadcastChanges();
+            }
+
+            player.sendOverlayMessage(Component.literal(targetAmmo + " / " + getMaxMag()));
         }
     }
+
+
+
+
 
     @Override
     public ItemUseAnimation getUseAnimation(ItemStack stack) {
@@ -148,6 +257,8 @@ public class GunItem extends Item {
 //        builder.accept(net.minecraft.network.chat.Component.empty());
         builder.accept(net.minecraft.network.chat.Component.translatable("tooltip.weapons.caliber" + toolTipText)
                 .withStyle(net.minecraft.ChatFormatting.YELLOW));
+        builder.accept(net.minecraft.network.chat.Component.literal(getAmmoCount(itemStack) + "/" + getMaxMag() + " " + Boolean.toString(hasMagRn(itemStack)))
+                .withStyle(net.minecraft.ChatFormatting.YELLOW));
     }
 
     @Override
@@ -159,7 +270,7 @@ public class GunItem extends Item {
 //        player.startUsingItem(hand);
         if (canShoot) {
             if (!level.isClientSide()) {
-                BulletEntity bullet = new BulletEntity(level, player, bulletSpeed, bulletDamage, gravity, airResistance).shouldExplode(explode).setAmmo(ammo);
+                BulletEntity bullet = new BulletEntity(level, player, getBulletSpeed(), getBulletDamage(), getGravity(), getAirResistance()).shouldExplode(explode).setAmmo(ammo);
                 level.addFreshEntity(bullet);
                 level.playSound(
                         null,
@@ -174,14 +285,15 @@ public class GunItem extends Item {
 
                 if (!player.getAbilities().instabuild) {
                     setAmmoCount(gunStack, currentAmmo - 1);
-                    String messageText = currentAmmo-1 + " / " + maxMag;
+                    String messageText = currentAmmo-1 + " / " + getMaxMag();
                     player.sendOverlayMessage(Component.literal(messageText));
                 }
 
 
             }
 
-            player.getCooldowns().addCooldown(gunStack.getItem().getDefaultInstance(), shotCoolDown);
+            player.getCooldowns().addCooldown(gunStack.getItem().getDefaultInstance(), getShotCoolDown());
+            if (noMag && currentAmmo-1 == 0) addOrRemoveMag(gunStack, false);
             return InteractionResult.PASS;
         }
 

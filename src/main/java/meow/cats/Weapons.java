@@ -1,8 +1,10 @@
 package meow.cats;
 
-import meow.cats.advancedguns.Config;
+import meow.cats.advancedguns.config.Config;
+import meow.cats.advancedguns.config.ModCommands;
 import meow.cats.advancedguns.event.EventManager;
 import meow.cats.advancedguns.items.GunItem;
+import meow.cats.advancedguns.items.MagazineItem;
 import meow.cats.advancedguns.items.ModItems;
 import meow.cats.advancedguns.misc.Zoom;
 import meow.cats.advancedguns.misc.sounds;
@@ -41,11 +43,17 @@ public class Weapons implements ModInitializer, ClientModInitializer {
 				if (stack.getItem() instanceof GunItem gun) {
 					gun.reload(player, stack);
 				}
+				if (stack.getItem() instanceof MagazineItem mag) {
+					mag.addAmmo(player, stack);
+				}
 			});
 		});
+		ModCommands.register();
 		Config.load();
 		sounds.load();
 		ModItems.initialize();
+
+
 
 	}
 
