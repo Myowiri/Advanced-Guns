@@ -2,13 +2,14 @@
 	"schemaVersion": 1,
 	"id": "weapons",
 	"version": "${version}",
-	"name": "Weapons",
-	"description": "Test Mod",
+	"name": "Advanced Guns",
+	"description": "Advanced Guns adds highly responsive firearms to Minecraft, featuring functional attachments, realistic physical bullet trajectories with gravity and drag, and dynamic glass-penetration mechanics.",
 	"authors": [
 		"Myowiri"
 	],
 	"contact": {
-
+		"sources": "https://github.com/Myowiri/Advanced-Guns",
+		"homepage": "https://modrinth.com/project/advanced-guns"
 	},
 	"icon": "assets/weapons/icon.png",
 	"environment": "*",
@@ -24,9 +25,9 @@
 		"weapons.mixins.json"
 	],
 	"depends": {
-		"fabricloader": ">=0.20.1",
+		"fabricloader": ">=0.17.0",
 		"minecraft": "~26.3",
-		"java": ">=25",
+		"java": ">=21",
 		"fabric-api": "*"
 	}
 }

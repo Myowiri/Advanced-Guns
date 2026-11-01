@@ -1,12 +1,13 @@
 package meow.cats;
 
-import meow.cats.event.EventManager;
-import meow.cats.items.GunItem;
-import meow.cats.items.ModItems;
-import meow.cats.misc.Zoom;
-import meow.cats.misc.sounds;
-import meow.cats.network.ReloadPayload;
-import meow.cats.projectile.ModEntities;
+import meow.cats.advancedguns.Config;
+import meow.cats.advancedguns.event.EventManager;
+import meow.cats.advancedguns.items.GunItem;
+import meow.cats.advancedguns.items.ModItems;
+import meow.cats.advancedguns.misc.Zoom;
+import meow.cats.advancedguns.misc.sounds;
+import meow.cats.advancedguns.network.ReloadPayload;
+import meow.cats.advancedguns.projectile.ModEntities;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.ModInitializer;
 
@@ -14,7 +15,6 @@ import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
-import net.minecraft.client.resources.sounds.Sound;
 import net.minecraft.resources.Identifier;
 
 import net.minecraft.world.InteractionHand;
@@ -43,7 +43,7 @@ public class Weapons implements ModInitializer, ClientModInitializer {
 				}
 			});
 		});
-
+		Config.load();
 		sounds.load();
 		ModItems.initialize();
 

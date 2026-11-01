@@ -1,7 +1,7 @@
 {
 	"required": true,
-	"package": "meow.cats.mixin",
-	"compatibilityLevel": "JAVA_25",
+	"package": "meow.cats.advancedguns.mixin",
+	"compatibilityLevel": "JAVA_21",
 	"mixins": [
 		"MixinOptions",
 		"MixinLocalPlayer",

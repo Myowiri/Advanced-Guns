@@ -1,4 +1,4 @@
-package meow.cats.mixin;
+package meow.cats.advancedguns.mixin;
 
 import meow.cats.ClientKeys;
 import net.minecraft.client.KeyMapping;

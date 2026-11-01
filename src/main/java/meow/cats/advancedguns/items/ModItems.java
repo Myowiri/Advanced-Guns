@@ -1,0 +1,134 @@
+package meow.cats.advancedguns.items;
+
+import meow.cats.Weapons;
+import meow.cats.advancedguns.Config;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+
+public class ModItems {
+
+    //TABS
+
+    public static final ResourceKey<CreativeModeTab> WEAPONS_GUNS_TAB_KEY = ResourceKey.create(
+            Registries.CREATIVE_MODE_TAB,
+            Identifier.fromNamespaceAndPath(Weapons.MOD_ID, "weapons_tab")
+    );
+
+    public static final CreativeModeTab WEAPONS_TAB = Registry.register(
+            BuiltInRegistries.CREATIVE_MODE_TAB,
+            WEAPONS_GUNS_TAB_KEY,
+            CreativeModeTab.builder(CreativeModeTab.Row.TOP, 0)
+                    .title(Component.translatable("itemGroup." + Weapons.MOD_ID + ".weapons_tab"))
+                    .icon(() -> new ItemStack(ModItems.AK47))
+                    .displayItems((parameters, output) -> {
+                        output.accept(ModItems.GLOCK17);
+                        output.accept(ModItems.AK47);
+                        output.accept(ModItems.AWM);
+                    })
+                    .build()
+
+    );
+
+    public static final ResourceKey<CreativeModeTab> WEAPONS_AMMO_TAB_KEY = ResourceKey.create(
+            Registries.CREATIVE_MODE_TAB,
+            Identifier.fromNamespaceAndPath(Weapons.MOD_ID, "weapons_ammo_tab")
+    );
+
+    public static final CreativeModeTab WEAPONS_AMMO_TAB = Registry.register(
+            BuiltInRegistries.CREATIVE_MODE_TAB,
+            WEAPONS_AMMO_TAB_KEY,
+            CreativeModeTab.builder(CreativeModeTab.Row.TOP, 1)
+                    .title(Component.translatable("itemGroup." + Weapons.MOD_ID + ".ammo"))
+                    .icon(() -> new ItemStack(ModItems.AK47_MAGAZINE))
+                    .build()
+    );
+
+    // AMMO
+    private static final ResourceKey<Item> AMMO_KEY = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Weapons.MOD_ID, "ammo"));
+    public static final Item AMMO = Registry.register(BuiltInRegistries.ITEM, AMMO_KEY, new AmmoItem(new Item.Properties().setId(AMMO_KEY).stacksTo(120)));
+
+    private static final ResourceKey<Item> PG7V_ROCKET_KEY = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Weapons.MOD_ID, "pg7v_rocket"));
+    public static final Item PG7V_ROCKET = Registry.register(BuiltInRegistries.ITEM, PG7V_ROCKET_KEY, new AmmoItem(new Item.Properties().setId(PG7V_ROCKET_KEY).stacksTo(16)));
+
+    // MAGS
+    private static final ResourceKey<Item> AK47_MAGAZINE_KEY = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Weapons.MOD_ID, "ak47-mag"));
+    public static final Item AK47_MAGAZINE = Registry.register(BuiltInRegistries.ITEM, AK47_MAGAZINE_KEY, new AmmoItem(new Item.Properties().setId(AK47_MAGAZINE_KEY).stacksTo(16)));
+
+    private static final ResourceKey<Item> AWM_MAGAZINE_KEY = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Weapons.MOD_ID, "awm_mag"));
+    public static final Item AWM_MAGAZINE = Registry.register(BuiltInRegistries.ITEM, AWM_MAGAZINE_KEY, new AmmoItem(new Item.Properties().setId(AWM_MAGAZINE_KEY).stacksTo(16)));
+
+    private static final ResourceKey<Item> GLOCK_MAG_KEY = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Weapons.MOD_ID, "glock_mag"));
+    public static final Item GLOCK_MAG = Registry.register(BuiltInRegistries.ITEM, GLOCK_MAG_KEY, new AmmoItem(new Item.Properties().setId(GLOCK_MAG_KEY).stacksTo(16)));
+
+    // GUNS
+    private static final ResourceKey<Item> AK47_KEY = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Weapons.MOD_ID, "ak-47"));
+    public static final Item AK47 = Registry.register(BuiltInRegistries.ITEM, AK47_KEY,
+            new GunItem(new Item.Properties().setId(AK47_KEY).stacksTo(1),
+                    Config.ak47.speed, Config.ak47.damage, Config.ak47.gravity, Config.ak47.resistance,
+                    Config.ak47.maxMag, AK47_MAGAZINE, Config.ak47.reloadCooldown, Config.ak47.shotCooldown,
+                    Config.ak47.hasScope, Config.ak47.caliber)
+    );
+
+    private static final ResourceKey<Item> RPG_KEY = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Weapons.MOD_ID, "rpg"));
+    public static final Item RPG = Registry.register(BuiltInRegistries.ITEM, RPG_KEY,
+            new GunItem(new Item.Properties().setId(RPG_KEY).stacksTo(1),
+                    Config.rpg.speed, Config.rpg.damage, Config.rpg.gravity, Config.rpg.resistance,
+                    Config.rpg.maxMag, PG7V_ROCKET, Config.rpg.reloadCooldown, Config.rpg.shotCooldown,
+                    Config.rpg.hasScope, Config.rpg.caliber).shouldExplode().setAmmo(PG7V_ROCKET)
+    );
+
+    private static final ResourceKey<Item> AWM_KEY = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Weapons.MOD_ID, "awm"));
+    public static final Item AWM = Registry.register(BuiltInRegistries.ITEM, AWM_KEY,
+            new GunItem(new Item.Properties().setId(AWM_KEY).stacksTo(1),
+                    Config.awm.speed, Config.awm.damage, Config.awm.gravity, Config.awm.resistance,
+                    Config.awm.maxMag, AWM_MAGAZINE, Config.awm.reloadCooldown, Config.awm.shotCooldown,
+                    Config.awm.hasScope, Config.awm.caliber)
+    );
+
+    private static final ResourceKey<Item> GLOCK_17_KEY = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Weapons.MOD_ID, "glock_17"));
+    public static final Item GLOCK17 = Registry.register(BuiltInRegistries.ITEM, GLOCK_17_KEY,
+            new GunItem(new Item.Properties().setId(GLOCK_17_KEY).stacksTo(1),
+                    Config.glock17.speed, Config.glock17.damage, Config.glock17.gravity, Config.glock17.resistance,
+                    Config.glock17.maxMag, GLOCK_MAG, Config.glock17.reloadCooldown, Config.glock17.shotCooldown,
+                    Config.glock17.hasScope, Config.glock17.caliber)
+    );
+
+    private ModItems() {
+    }
+
+    public static void initialize() {
+        ResourceKey<CreativeModeTab> combatTab = ResourceKey.create(
+                Registries.CREATIVE_MODE_TAB,
+                Identifier.fromNamespaceAndPath("minecraft", "combat")
+        );
+        net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents.modifyOutputEvent(WEAPONS_GUNS_TAB_KEY).register(output -> {
+            output.accept(GLOCK17);
+            output.accept(AK47);
+            output.accept(AWM);
+            output.accept(RPG);
+        });
+
+        net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents.modifyOutputEvent(WEAPONS_AMMO_TAB_KEY).register(output -> {
+            output.accept(AMMO);
+            output.accept(PG7V_ROCKET);
+            output.accept(GLOCK_MAG);
+            output.accept(AK47_MAGAZINE);
+            output.accept(AWM_MAGAZINE);
+        });
+
+//        //GUNS
+//        CreativeModeTabEvents.modifyOutputEvent(combatTab).register(output -> output.accept(TEST));
+//
+//        //AMMOS
+//        CreativeModeTabEvents.modifyOutputEvent(combatTab).register(output -> output.accept(AMMO));
+//        //MAGS
+//        CreativeModeTabEvents.modifyOutputEvent(combatTab).register(output -> output.accept(GLOCK_MAG));
+    }
+}
