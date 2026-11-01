@@ -1,0 +1,20 @@
+{
+  "mutedsingleshot": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "weapons:mutedsingleshot",
+        "stream": false
+      }
+    ]
+  },
+  "pistol_reload": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "weapons:pistol_reload",
+        "stream": false
+      }
+    ]
+  }
+}

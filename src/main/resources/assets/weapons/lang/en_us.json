@@ -1,0 +1,18 @@
+{
+  "item.weapons.glock_17": "Glock 17",
+  "item.weapons.ammo": "Ammo",
+  "item.weapons.glock_mag": "Glock 17 Mag",
+  "item.weapons.ak-47": "AK-47",
+  "item.weapons.ak47-mag": "AK 7,62x39 Mag",
+  "item.weapons.awm": "AWM",
+  "item.weapons.awm_mag": "AWM .300 Win Mag Magazine",
+  "tooltip.weapons.caliber.7,62x39": "7,62×39 - 13 Damage",
+  "tooltip.weapons.caliber.9×19": "9×19mm - 10 Damage",
+  "tooltip.weapons.caliber.7,62×67": "7,62×67mm (.300 Win Mag) - 30 Damage",
+  "itemGroup.weapons.ammo": "Ammo",
+  "itemGroup.weapons.weapons_tab": "Weapons",
+  "key.weapons.zoom": "Zoom",
+  "key.weapons.reload": "Reload",
+  "key.weapons.check": "Check",
+  "key.category.weapons.keys": "Weapons"
+}

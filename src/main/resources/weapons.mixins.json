@@ -1,0 +1,19 @@
+{
+	"required": true,
+	"package": "meow.cats.mixin",
+	"compatibilityLevel": "JAVA_25",
+	"mixins": [
+		"MixinOptions",
+		"MixinLocalPlayer",
+		"MixinMinecraft",
+		"MixinCamera",
+		"MixinHud",
+		"MixinMouse"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	},
+	"overwrites": {
+		"requireAnnotations": true
+	}
+}

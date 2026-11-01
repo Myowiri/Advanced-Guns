@@ -1,0 +1,32 @@
+{
+	"schemaVersion": 1,
+	"id": "weapons",
+	"version": "${version}",
+	"name": "Weapons",
+	"description": "Test Mod",
+	"authors": [
+		"Myowiri"
+	],
+	"contact": {
+
+	},
+	"icon": "assets/weapons/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"meow.cats.Weapons"
+		],
+		"client": [
+			"meow.cats.Weapons"
+		]
+	},
+	"mixins": [
+		"weapons.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.20.1",
+		"minecraft": "~26.3",
+		"java": ">=25",
+		"fabric-api": "*"
+	}
+}
