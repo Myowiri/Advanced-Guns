@@ -78,18 +78,28 @@ public class BulletEntity extends Projectile implements ItemSupplier {
             return;
         } else if (hitResult.getType() == HitResult.Type.BLOCK) {
             BlockHitResult blockHitResult = (BlockHitResult) hitResult;
-            if (this.level().getBlockState(blockHitResult.getBlockPos()).getBlock() != Blocks.AIR) {
+            net.minecraft.core.BlockPos blockPos = blockHitResult.getBlockPos();
+            net.minecraft.world.level.block.state.BlockState blockState = this.level().getBlockState(blockPos);
 
-                if (!this.level().isClientSide()) {
-                    this.level().playSound(null, this.getX(), this.getY(), this.getZ(),
-                            SoundEvents.TUFF_BREAK, SoundSource.BLOCKS, 1.5f, 0.8f);
+            if (!blockState.isAir()) {
+                boolean isGlass = blockState.is(net.minecraft.tags.BlockTags.IMPERMEABLE)
+                        || blockState.getBlock() instanceof net.minecraft.world.level.block.StainedGlassBlock
+                        || blockState.getBlock() instanceof net.minecraft.world.level.block.IronBarsBlock
+                        || blockState.getBlock().getDescriptionId().contains("glass");
+
+                if (isGlass) {
+                    this.level().destroyBlock(blockPos, false, this.getOwner());
+                    motion = motion.scale(0.85f);
+                } else {
+                    if (!this.level().isClientSide()) {
+                        this.level().playSound(null, this.getX(), this.getY(), this.getZ(),
+                                SoundEvents.TUFF_BREAK, SoundSource.BLOCKS, 1.5f, 0.8f);
+                    }
+                    this.discard();
+                    return;
                 }
-
-                this.discard();
-                return;
             }
         }
-
         motion = motion.add(0, -gravity, 0);
         motion = motion.scale(airResistance);
         this.setDeltaMovement(motion);
