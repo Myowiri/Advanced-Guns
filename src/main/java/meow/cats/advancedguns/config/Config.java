@@ -17,6 +17,7 @@ public class Config {
     public static WeaponConfig rpg = new WeaponConfig(4.5f, 35.0f, 0.008f, 0.995f, 1, 70, 10);
     public static WeaponConfig awm = new WeaponConfig(47.0f, 30.0f, 0.0085f, 0.99f, 5, 70, 25);
     public static WeaponConfig glock17 = new WeaponConfig(15.0f, 10.0f, 0.0245f, 0.99f, 17, 30, 10);
+    public static float explodeRange = 4.5f;
 
     private WeaponConfig ak_47;
     private WeaponConfig rpg_launcher;
@@ -63,6 +64,8 @@ public class Config {
                 if (parsedConfig.rpg_launcher != null) rpg = parsedConfig.rpg_launcher;
                 if (parsedConfig.awm_sniper != null) awm = parsedConfig.awm_sniper;
                 if (parsedConfig.glock_17 != null) glock17 = parsedConfig.glock_17;
+                explodeRange = parsedConfig.explodeRange;
+
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -76,7 +79,7 @@ public class Config {
             configToSave.rpg_launcher = rpg;
             configToSave.awm_sniper = awm;
             configToSave.glock_17 = glock17;
-
+            configToSave.explodeRange = explodeRange;
             GSON.toJson(configToSave, writer);
         } catch (IOException e) {
             e.printStackTrace();

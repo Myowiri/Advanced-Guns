@@ -31,7 +31,7 @@ public class GunItem extends Item {
 //    private final float bulletDamage;
 //    private final float gravity;
 //    private final float airResistance;
-    private final boolean scope;
+    private boolean scope = false;
     private final String toolTipText;
 //    public final int reloadCoolDown;
 //    public final int shotCoolDown;
@@ -57,16 +57,21 @@ public class GunItem extends Item {
 //        this.toolTipText = toolTipText;
 //        this.scope = scope;
 //    }
-    public GunItem(Properties properties, Supplier<Config.WeaponConfig> configSupplier, boolean hasScope, Item mag, String toolTipText) {
+    public GunItem(Properties properties, Supplier<Config.WeaponConfig> configSupplier, Item mag, String toolTipText) {
         super(properties);
         this.configSupplier = configSupplier;
-        this.scope = hasScope;
         this.toolTipText = toolTipText;
         this.mag = mag;
     }
 
     private Config.WeaponConfig getConfig() {
         return this.configSupplier.get();
+    }
+
+
+    public GunItem addScope(){
+        scope = true;
+        return this;
     }
 
     public float getBulletSpeed() { return getConfig().getSpeed(); }

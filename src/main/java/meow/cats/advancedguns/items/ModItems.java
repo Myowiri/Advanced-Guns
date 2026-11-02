@@ -60,25 +60,25 @@ public class ModItems {
     private static final ResourceKey<Item> AK47_KEY = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Weapons.MOD_ID, "ak-47"));
     public static final Item AK47 = Registry.register(BuiltInRegistries.ITEM, AK47_KEY,
             new GunItem(new Item.Properties().setId(AK47_KEY).stacksTo(1),
-                    () -> Config.ak47, false, AK47_MAGAZINE, ".7,62x39")
+                    () -> Config.ak47, AK47_MAGAZINE, ".7,62x39")
     );
 
     private static final ResourceKey<Item> RPG_KEY = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Weapons.MOD_ID, "rpg"));
     public static final Item RPG = Registry.register(BuiltInRegistries.ITEM, RPG_KEY,
             new GunItem(new Item.Properties().setId(RPG_KEY).stacksTo(1),
-                    () -> Config.rpg, false, PG7V_ROCKET, ".rpg_rocket").shouldExplode().setAmmo(PG7V_ROCKET)
+                    () -> Config.rpg, PG7V_ROCKET, ".rpg_rocket").shouldExplode().setAmmo(PG7V_ROCKET)
     );
 
     private static final ResourceKey<Item> AWM_KEY = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Weapons.MOD_ID, "awm"));
     public static final Item AWM = Registry.register(BuiltInRegistries.ITEM, AWM_KEY,
             new GunItem(new Item.Properties().setId(AWM_KEY).stacksTo(1),
-                    () -> Config.awm, true, AWM_MAGAZINE, ".7,62×67")
+                    () -> Config.awm, AWM_MAGAZINE, ".7,62×67").addScope()
     );
 
     private static final ResourceKey<Item> GLOCK_17_KEY = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Weapons.MOD_ID, "glock_17"));
     public static final Item GLOCK17 = Registry.register(BuiltInRegistries.ITEM, GLOCK_17_KEY,
             new GunItem(new Item.Properties().setId(GLOCK_17_KEY).stacksTo(1),
-                    () -> Config.glock17, false, GLOCK_MAG, ".9×19")
+                    () -> Config.glock17, GLOCK_MAG, ".9×19")
     );
 
     private ModItems() {
