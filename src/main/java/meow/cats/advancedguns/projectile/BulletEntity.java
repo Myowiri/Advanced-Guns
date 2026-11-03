@@ -23,6 +23,8 @@ import net.minecraft.sounds.SoundSource;
 
 import static meow.cats.advancedguns.items.ModItems.AMMO;
 
+import meow.cats.advancedguns.config.Config;
+
 public class BulletEntity extends Projectile implements ItemSupplier {
     private final float baseDamage;
     private final float maxSpeed;
@@ -98,7 +100,7 @@ public class BulletEntity extends Projectile implements ItemSupplier {
                     this.level().explode(
                             this,
                             this.getX(), this.getY(), this.getZ(),
-                            4.5f,
+                            Config.explodeRange,
                             false,
                             net.minecraft.world.level.Level.ExplosionInteraction.TNT
                     );
@@ -124,7 +126,7 @@ public class BulletEntity extends Projectile implements ItemSupplier {
                             this.level().explode(
                                     this,
                                     this.getX(), this.getY(), this.getZ(),
-                                    4.5f,
+                                    Config.explodeRange,
                                     false,
                                     net.minecraft.world.level.Level.ExplosionInteraction.TNT
                             );
