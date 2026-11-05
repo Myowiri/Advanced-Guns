@@ -51,9 +51,7 @@ public class EventManager  {
         if (ClientKeys.ZOOM_BIND.consumeClick()) {
             net.minecraft.world.item.ItemStack handStack = player.getMainHandItem();
             if (handStack.getItem() instanceof GunItem gun) {
-                if (gun.hasScope()){
-                    Weapons.zoom.active = !Weapons.zoom.active;
-                }
+                Weapons.zoom.active = !Weapons.zoom.active;
             }
         }
 

@@ -42,7 +42,7 @@ public class GunItem extends Item {
     public Item ammo = AMMO;
     public boolean explode = false;
     private boolean noMag = false;
-
+    private boolean canAim = true;
 //    public GunItem(Properties properties, float bulletSpeed, float bulletDamage, float gravity, float airResistance, int getMaxMag(), Item mag, int reloadCoolDown, int shotCoolDown, boolean scope,  String toolTipText) {
 //        super(properties);
 //
@@ -124,6 +124,9 @@ public class GunItem extends Item {
         return this;
     }
 
+    public GunItem forbidAim(){canAim = false; return this;}
+
+    public boolean canAim(){ return canAim;}
 
     public boolean hasMagRn(ItemStack stack) {
         CustomData customData = stack.get(DataComponents.CUSTOM_DATA);
@@ -151,12 +154,14 @@ public class GunItem extends Item {
                 int ammoToSave = getAmmoCount(gunStack);
                 ItemStack magStack = new ItemStack(requiredMag);
                 requiredMag.setAmmoCount(magStack, ammoToSave);
-                player.drop(magStack, false, Prediction.PREDICTED);
+                if (freeSlot(player)) player.drop(magStack, true, Prediction.PREDICTED);
+                else player.drop(magStack, false, Prediction.PREDICTED);
             } else {
                 AmmoItem requiredAmmo = (AmmoItem) this.ammo;
                 int ammoToSave = getAmmoCount(gunStack);
                 ItemStack ammoStack = new ItemStack(requiredAmmo, ammoToSave);
-                player.drop(ammoStack, false, Prediction.PREDICTED);
+                if (freeSlot(player)) player.drop(ammoStack, true, Prediction.PREDICTED);
+                else player.drop(ammoStack, false, Prediction.PREDICTED);
             }
 
             addOrRemoveMag(gunStack, false);
@@ -185,10 +190,9 @@ public class GunItem extends Item {
 
             if (neededAmmo > 0) {
                 ItemStack offhandStack = player.getOffhandItem();
-
                 if (!offhandStack.isEmpty() && offhandStack.getItem() == requiredAmmo) {
-                    int take = Math.min(neededAmmo, offhandStack.getCount());
-                    offhandStack.shrink(take);
+                    int take = 1;
+                    offhandStack.shrink(1);
                     if (offhandStack.isEmpty()) {
                         player.setItemInHand(InteractionHand.OFF_HAND, ItemStack.EMPTY);
                     }
@@ -299,4 +303,14 @@ public class GunItem extends Item {
 
         return InteractionResult.FAIL;
     }
+
+    private boolean freeSlot(Player player) {
+        for (int i = 9; i <= 44; i++) {
+            if (player.containerMenu.getSlot(i).getItem().isEmpty()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

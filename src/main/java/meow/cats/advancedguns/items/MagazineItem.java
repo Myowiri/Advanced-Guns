@@ -42,12 +42,14 @@ public class MagazineItem extends Item {
 
 
     public void addAmmo(Player player, ItemStack magazineStack) {
+        if (player.getCooldowns().isOnCooldown(magazineStack.getItem().getDefaultInstance())) return;
+        if (magazineStack.getCount() != 1) return;
         ItemStack offhandStack = player.getOffhandItem();
         if (!offhandStack.isEmpty() && offhandStack.getItem() == this.ammoItem) {
             int currentAmmo = getAmmoCount(magazineStack);
             if (currentAmmo >= this.maxAmmo) return;
-            int newAmmo = currentAmmo + 1;
-            setAmmoCount(magazineStack, newAmmo);
+            currentAmmo += 1;
+            setAmmoCount(magazineStack, currentAmmo);
             offhandStack.shrink(1);
             if (offhandStack.isEmpty()) {
                 player.setItemInHand(net.minecraft.world.InteractionHand.OFF_HAND, ItemStack.EMPTY);
@@ -56,9 +58,10 @@ public class MagazineItem extends Item {
             if (player instanceof net.minecraft.server.level.ServerPlayer serverPlayer) {
                 serverPlayer.inventoryMenu.broadcastChanges();
             }
-            String messageText = newAmmo + " / " + this.maxAmmo;
+            String messageText = currentAmmo + " / " + this.maxAmmo;
             player.sendOverlayMessage(Component.literal(messageText));
         }
+        player.getCooldowns().addCooldown(magazineStack, 9);
     }
 
     public void setAmmoCount(ItemStack stack, int count) {

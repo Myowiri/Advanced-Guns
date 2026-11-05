@@ -51,6 +51,11 @@ public class MixinHud {
         }
         net.minecraft.world.item.ItemStack handStack = mc.player.getMainHandItem();
         if (handStack.getItem() instanceof GunItem gun)
-            if (gun.hasScope()) ci.cancel();
+            if (gun.hasScope())
+                ci.cancel();
+        net.minecraft.world.item.ItemStack handStack2 = mc.player.getOffhandItem();
+        if (handStack2.getItem() instanceof GunItem gun)
+            if (gun.hasScope())
+                ci.cancel();
     }
 }

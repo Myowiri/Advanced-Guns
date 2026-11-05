@@ -100,7 +100,7 @@ public class BulletEntity extends Projectile implements ItemSupplier {
                     this.level().explode(
                             this,
                             this.getX(), this.getY(), this.getZ(),
-                            Config.explodeRange,
+                            4.5f,
                             false,
                             net.minecraft.world.level.Level.ExplosionInteraction.TNT
                     );
@@ -126,7 +126,7 @@ public class BulletEntity extends Projectile implements ItemSupplier {
                             this.level().explode(
                                     this,
                                     this.getX(), this.getY(), this.getZ(),
-                                    Config.explodeRange,
+                                    4.5f,
                                     false,
                                     net.minecraft.world.level.Level.ExplosionInteraction.TNT
                             );

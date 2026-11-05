@@ -46,16 +46,16 @@ public class ModItems {
     public static final Item AMMO = Registry.register(BuiltInRegistries.ITEM, AMMO_KEY, new AmmoItem(new Item.Properties().setId(AMMO_KEY).stacksTo(99)));
 
     private static final ResourceKey<Item> PG7V_ROCKET_KEY = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Weapons.MOD_ID, "pg7v_rocket"));
-    public static final Item PG7V_ROCKET = Registry.register(BuiltInRegistries.ITEM, PG7V_ROCKET_KEY, new AmmoItem(new Item.Properties().setId(PG7V_ROCKET_KEY).stacksTo(4)));
+    public static final Item PG7V_ROCKET = Registry.register(BuiltInRegistries.ITEM, PG7V_ROCKET_KEY, new AmmoItem(new Item.Properties().setId(PG7V_ROCKET_KEY).stacksTo(2)));
 
     private static final ResourceKey<Item> AK47_MAGAZINE_KEY = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Weapons.MOD_ID, "ak47-mag"));
-    public static final Item AK47_MAGAZINE = Registry.register(BuiltInRegistries.ITEM, AK47_MAGAZINE_KEY, new MagazineItem(new Item.Properties().setId(AK47_MAGAZINE_KEY).stacksTo(1), 30));
+    public static final Item AK47_MAGAZINE = Registry.register(BuiltInRegistries.ITEM, AK47_MAGAZINE_KEY, new MagazineItem(new Item.Properties().setId(AK47_MAGAZINE_KEY).stacksTo(3), 30));
 
     private static final ResourceKey<Item> AWM_MAGAZINE_KEY = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Weapons.MOD_ID, "awm_mag"));
-    public static final Item AWM_MAGAZINE = Registry.register(BuiltInRegistries.ITEM, AWM_MAGAZINE_KEY, new MagazineItem(new Item.Properties().setId(AWM_MAGAZINE_KEY).stacksTo(1), 5));
+    public static final Item AWM_MAGAZINE = Registry.register(BuiltInRegistries.ITEM, AWM_MAGAZINE_KEY, new MagazineItem(new Item.Properties().setId(AWM_MAGAZINE_KEY).stacksTo(4), 5));
 
     private static final ResourceKey<Item> GLOCK_MAG_KEY = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Weapons.MOD_ID, "glock_mag"));
-    public static final Item GLOCK_MAG = Registry.register(BuiltInRegistries.ITEM, GLOCK_MAG_KEY, new MagazineItem(new Item.Properties().setId(GLOCK_MAG_KEY).stacksTo(1), 17));
+    public static final Item GLOCK_MAG = Registry.register(BuiltInRegistries.ITEM, GLOCK_MAG_KEY, new MagazineItem(new Item.Properties().setId(GLOCK_MAG_KEY).stacksTo(5), 17));
 
     private static final ResourceKey<Item> AK47_KEY = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Weapons.MOD_ID, "ak-47"));
     public static final Item AK47 = Registry.register(BuiltInRegistries.ITEM, AK47_KEY,
@@ -66,7 +66,7 @@ public class ModItems {
     private static final ResourceKey<Item> RPG_KEY = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Weapons.MOD_ID, "rpg"));
     public static final Item RPG = Registry.register(BuiltInRegistries.ITEM, RPG_KEY,
             new GunItem(new Item.Properties().setId(RPG_KEY).stacksTo(1),
-                    () -> Config.rpg, false, PG7V_ROCKET, ".rpg_rocket").shouldExplode().setAmmo(PG7V_ROCKET).removeMag()
+                    () -> Config.rpg, false, PG7V_ROCKET, ".rpg_rocket").shouldExplode().setAmmo(PG7V_ROCKET).removeMag().forbidAim()
     );
 
     private static final ResourceKey<Item> AWM_KEY = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Weapons.MOD_ID, "awm"));
@@ -78,7 +78,7 @@ public class ModItems {
     private static final ResourceKey<Item> GLOCK_17_KEY = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Weapons.MOD_ID, "glock_17"));
     public static final Item GLOCK17 = Registry.register(BuiltInRegistries.ITEM, GLOCK_17_KEY,
             new GunItem(new Item.Properties().setId(GLOCK_17_KEY).stacksTo(1),
-                    () -> Config.glock17, false, GLOCK_MAG, ".9×19")
+                    () -> Config.glock17, false, GLOCK_MAG, ".9×19").forbidAim()
     );
 
     private ModItems() {

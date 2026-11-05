@@ -19,7 +19,7 @@ public abstract class MixinMinecraft {
     private void removeRightClickDelay(CallbackInfo ci) {
         Minecraft mc = (Minecraft) (Object) this;
 
-        if (mc.player != null && mc.player.getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof GunItem) {
+        if (mc.player != null && (mc.player.getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof GunItem || mc.player.getItemInHand(InteractionHand.OFF_HAND).getItem() instanceof GunItem )) {
             this.rightClickDelay = 0;
         }
     }
