@@ -2,6 +2,7 @@ package meow.cats.advancedguns.event;
 
 
 import meow.cats.Weapons;
+import meow.cats.advancedguns.event.impl.ShootEvent;
 import meow.cats.advancedguns.event.impl.TickEvent;
 import meow.cats.advancedguns.items.GunItem;
 import meow.cats.advancedguns.items.MagazineItem;
@@ -22,6 +23,7 @@ public class EventManager  {
     public void onUnload() {
         EVENT_BUS.unregister(this);
     }
+
 
     @Subscribe
     public void onTick(TickEvent event) {
@@ -55,6 +57,10 @@ public class EventManager  {
             }
         }
 
+    }
+
+    @Subscribe
+    public void onShoot(ShootEvent event){
     }
 
 

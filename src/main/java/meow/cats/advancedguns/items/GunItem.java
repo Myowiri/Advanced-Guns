@@ -1,6 +1,7 @@
 package meow.cats.advancedguns.items;
 
 import meow.cats.advancedguns.config.Config;
+import meow.cats.advancedguns.event.impl.ShootEvent;
 import meow.cats.advancedguns.projectile.BulletEntity;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
@@ -22,6 +23,8 @@ import java.util.function.Consumer;
 import static meow.cats.advancedguns.items.ModItems.AMMO;
 import static meow.cats.advancedguns.misc.sounds.MUTED_SINGLE_SHOT;
 import static meow.cats.advancedguns.misc.sounds.PISTOL_RELOAD;
+import static meow.cats.advancedguns.utils.Utils.EVENT_BUS;
+
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -245,9 +248,10 @@ public class GunItem extends Item {
 
 
 
+
     @Override
     public ItemUseAnimation getUseAnimation(ItemStack stack) {
-        return ItemUseAnimation.BOW;
+        return ItemUseAnimation.NONE;
     }
 
     @Override
@@ -275,6 +279,7 @@ public class GunItem extends Item {
         if (canShoot) {
             if (!level.isClientSide()) {
                 BulletEntity bullet = new BulletEntity(level, player, getBulletSpeed(), getBulletDamage(), getGravity(), getAirResistance()).shouldExplode(explode).setAmmo(ammo);
+                EVENT_BUS.post(new ShootEvent());
                 level.addFreshEntity(bullet);
                 level.playSound(
                         null,
@@ -298,7 +303,7 @@ public class GunItem extends Item {
 
             player.getCooldowns().addCooldown(gunStack.getItem().getDefaultInstance(), getShotCoolDown());
             if (noMag && currentAmmo-1 == 0) addOrRemoveMag(gunStack, false);
-            return InteractionResult.PASS;
+            return InteractionResult.CONSUME;
         }
 
         return InteractionResult.FAIL;
