@@ -1,9 +1,9 @@
 {
 	"schemaVersion": 1,
-	"id": "weapons",
+	"id": "complexguns",
 	"version": "${version}",
-	"name": "Advanced Guns",
-	"description": "Advanced Guns adds highly responsive firearms to Minecraft, featuring functional attachments, realistic physical bullet trajectories with gravity and drag, and dynamic glass-penetration mechanics.",
+	"name": "Complex Guns ",
+	"description": "ComplexGuns adds highly responsive firearms to Minecraft, featuring functional attachments, realistic physical bullet trajectories with gravity and drag, and dynamic glass-penetration mechanics.",
 	"authors": [
 		"Myowiri"
 	],

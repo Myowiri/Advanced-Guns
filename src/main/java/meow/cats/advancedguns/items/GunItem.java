@@ -1,5 +1,6 @@
 package meow.cats.advancedguns.items;
 
+import com.geckolib.animatable.GeoAnimatable;
 import meow.cats.advancedguns.config.Config;
 import meow.cats.advancedguns.event.impl.ShootEvent;
 import meow.cats.advancedguns.projectile.BulletEntity;
@@ -46,6 +47,9 @@ public class GunItem extends Item {
     public boolean explode = false;
     private boolean noMag = false;
     private boolean canAim = true;
+    private float aimY = 2;
+    private float aimZ = 0;
+    private float aimX = -9;
 //    public GunItem(Properties properties, float bulletSpeed, float bulletDamage, float gravity, float airResistance, int getMaxMag(), Item mag, int reloadCoolDown, int shotCoolDown, boolean scope,  String toolTipText) {
 //        super(properties);
 //
@@ -67,6 +71,8 @@ public class GunItem extends Item {
         this.toolTipText = toolTipText;
         this.mag = mag;
     }
+
+
 
     private Config.WeaponConfig getConfig() {
         return this.configSupplier.get();
@@ -128,6 +134,15 @@ public class GunItem extends Item {
     }
 
     public GunItem forbidAim(){canAim = false; return this;}
+
+    public GunItem setAimX(float i){aimX = i;return this;}
+    public float getAimX(){return aimX;}
+
+    public GunItem setAimY(float i){aimY = i;return this;}
+    public float getAimY(){return aimY;}
+
+    public GunItem setAimZ(float i){aimZ = i;return this;}
+    public float getAimZ(){return aimZ;}
 
     public boolean canAim(){ return canAim;}
 

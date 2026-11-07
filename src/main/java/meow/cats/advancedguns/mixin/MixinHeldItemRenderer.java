@@ -29,11 +29,12 @@ public abstract class MixinHeldItemRenderer {
                 return;
             }
             if (hand == InteractionHand.MAIN_HAND) {
-                int y = gun.hasScope() ? -10 : 2;
+                if (gun.hasScope()) {ci.cancel(); return;}
+//                float y = gun.hasScope() ? -20 : gun.getAimY();
                 poseStack.rotateDegrees(Axis.XP, 0.0F);
                 poseStack.rotateDegrees(Axis.YP, 0);
                 poseStack.rotateDegrees(Axis.ZP, 0.0F);
-                poseStack.translate(-9 / 16.0F, y / 16.0F, 0 / 16.0F);
+                poseStack.translate(gun.getAimX() / 16.0F, gun.getAimY() / 16.0F, gun.getAimZ() / 16.0F);
             }
         }
     }
