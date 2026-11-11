@@ -1,6 +1,5 @@
 package meow.cats.advancedguns.items;
 
-import com.geckolib.animatable.GeoAnimatable;
 import meow.cats.advancedguns.config.Config;
 import meow.cats.advancedguns.event.impl.ShootEvent;
 import meow.cats.advancedguns.projectile.BulletEntity;

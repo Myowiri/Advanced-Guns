@@ -3,11 +3,6 @@ plugins {
 	id 'maven-publish'
 }
 
-repositories {
-	flatDir {
-		dirs "libs"
-	}
-}
 
 dependencies {
 	// To change the versions see the gradle.properties file
@@ -16,8 +11,7 @@ dependencies {
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
-	implementation(name: "geckolib-fabric-26.3-5.5.7", ext: "jar")
-	include(name: "geckolib-fabric-26.3-5.5.7", ext: "jar")
+
 }
 
 processResources {

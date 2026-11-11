@@ -60,7 +60,7 @@ public class ModItems {
     private static final ResourceKey<Item> AK47_KEY = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Weapons.MOD_ID, "ak-47"));
     public static final Item AK47 = Registry.register(BuiltInRegistries.ITEM, AK47_KEY,
             new GunItem(new Item.Properties().setId(AK47_KEY).stacksTo(1),
-                    () -> Config.ak47, false, AK47_MAGAZINE, ".7,62x39").setAimY(9.6f)
+                    () -> Config.ak47, false, AK47_MAGAZINE, ".7,62x39").setAimY(9.6f).forbidAim()
     );
 
     private static final ResourceKey<Item> RPG_KEY = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Weapons.MOD_ID, "rpg"));
