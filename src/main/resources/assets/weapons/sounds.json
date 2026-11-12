@@ -1,9 +1,20 @@
 {
-  "mutedsingleshot": {
+  "mutedsingleshot_stereo": {
     "category": "player",
     "sounds": [
       {
-        "name": "weapons:mutedsingleshot",
+        "name": "weapons:mutedsingleshot_stereo",
+        "volume": 3.0,
+        "stream": false
+      }
+    ]
+  },
+  "mutedsingleshot_mono": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "weapons:mutedsingleshot_mono",
+        "volume": 3.0,
         "stream": false
       }
     ]

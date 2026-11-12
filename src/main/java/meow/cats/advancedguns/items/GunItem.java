@@ -21,8 +21,7 @@ import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import java.util.function.Consumer;
 import static meow.cats.advancedguns.items.ModItems.AMMO;
-import static meow.cats.advancedguns.misc.sounds.MUTED_SINGLE_SHOT;
-import static meow.cats.advancedguns.misc.sounds.PISTOL_RELOAD;
+import static meow.cats.advancedguns.misc.sounds.*;
 import static meow.cats.advancedguns.utils.Utils.EVENT_BUS;
 
 import java.util.function.Consumer;
@@ -291,20 +290,34 @@ public class GunItem extends Item {
 //        ItemStack itemstack = player.getItemInHand(hand);
 //        player.startUsingItem(hand);
         if (canShoot) {
-            if (!level.isClientSide()) {
-                BulletEntity bullet = new BulletEntity(level, player, getBulletSpeed(), getBulletDamage(), getGravity(), getAirResistance()).shouldExplode(explode).setAmmo(ammo);
-                EVENT_BUS.post(new ShootEvent());
-                level.addFreshEntity(bullet);
-                level.playSound(
-                        null,
+            if (level.isClientSide()) {
+                float pitch = 1.0f + (level.getRandom().nextFloat() - 0.5f) * 0.08f;
+                level.playLocalSound(
                         player.getX(),
                         player.getY() + player.getEyeHeight(),
                         player.getZ(),
-                        MUTED_SINGLE_SHOT,
+                        MUTED_SINGLE_SHOT_MONO,
                         SoundSource.PLAYERS,
-                        1.5f,
-                        1.0f
+                        1.0f,
+                        pitch,
+                        false
                 );
+            }
+            else {
+                BulletEntity bullet = new BulletEntity(level, player, getBulletSpeed(), getBulletDamage(), getGravity(), getAirResistance()).shouldExplode(explode).setAmmo(ammo);
+                EVENT_BUS.post(new ShootEvent());
+                level.addFreshEntity(bullet);
+//                level.playSound(
+//                        null,
+//                        player.getX(),
+//                        player.getY() + player.getEyeHeight(),
+//                        player.getZ(),
+//                        MUTED_SINGLE_SHOT,
+//                        SoundSource.PLAYERS,
+//                        1.5f,
+//                        1.0f
+//                );
+                playDynamicShotSound(player);
 
                 if (!player.getAbilities().instabuild) {
                     setAmmoCount(gunStack, currentAmmo - 1);
@@ -322,6 +335,64 @@ public class GunItem extends Item {
 
         return InteractionResult.FAIL;
     }
+
+    public void playDynamicShotSound(Player shooter) {
+        if (!(shooter.level() instanceof net.minecraft.server.level.ServerLevel serverLevel)) return;
+
+        double maxDistance = 200.0;
+        net.minecraft.world.phys.Vec3 look = shooter.getLookAngle();
+        double x = shooter.getX() + look.x * 0.6;
+        double y = shooter.getY() + shooter.getEyeHeight() + look.y * 0.6;
+        double z = shooter.getZ() + look.z * 0.6;
+
+        float baseRandom = (serverLevel.getRandom().nextFloat() - 0.5f) * 0.1f;
+        net.minecraft.core.Holder<net.minecraft.sounds.SoundEvent> soundHolder =
+                net.minecraft.core.registries.BuiltInRegistries.SOUND_EVENT.wrapAsHolder(MUTED_SINGLE_SHOT_STEREO);
+
+        for (net.minecraft.server.level.ServerPlayer listener : serverLevel.players()) {
+            if (listener == shooter) continue;
+
+            double distance = listener.distanceTo(shooter);
+            if (distance > maxDistance) continue;
+
+            float distanceFactor = (float) (distance / maxDistance);
+            float dynamicPitch = Math.max(0.5f, Math.min(2.0f, 1.0f - (distanceFactor * 0.35f) + baseRandom));
+
+            float volume;
+            if (distance <= 25.0) {
+                volume = 1.0f;
+            } else {
+                float fade = 1.0f - (float) ((distance - 25.0) / (maxDistance - 25.0));
+                volume = Math.max(0.12f, (float) Math.pow(fade, 1.3));
+            }
+
+            double soundX = x;
+            double soundY = y;
+            double soundZ = z;
+
+            if (distance > 12.0) {
+                net.minecraft.world.phys.Vec3 listenerEye = listener.getEyePosition();
+                net.minecraft.world.phys.Vec3 shooterPos = new net.minecraft.world.phys.Vec3(x, y, z);
+                net.minecraft.world.phys.Vec3 direction = shooterPos.subtract(listenerEye).normalize();
+                net.minecraft.world.phys.Vec3 projectedPos = listenerEye.add(direction.scale(10.0));
+
+                soundX = projectedPos.x;
+                soundY = projectedPos.y;
+                soundZ = projectedPos.z;
+            }
+
+            listener.connection.send(new net.minecraft.network.protocol.game.ClientboundSoundPacket(
+                    soundHolder,
+                    net.minecraft.sounds.SoundSource.PLAYERS,
+                    soundX, soundY, soundZ,
+                    volume,
+                    dynamicPitch,
+                    serverLevel.getRandom().nextLong()
+            ));
+        }
+    }
+
+
 
     private boolean freeSlot(Player player) {
         for (int i = 9; i <= 44; i++) {

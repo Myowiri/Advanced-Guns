@@ -9,7 +9,8 @@ import static meow.cats.Weapons.MOD_ID;
 
 public class sounds {
 
-    public static final SoundEvent MUTED_SINGLE_SHOT = register("mutedsingleshot");
+    public static final SoundEvent MUTED_SINGLE_SHOT_MONO = register("mutedsingleshot_mono");
+    public static final SoundEvent MUTED_SINGLE_SHOT_STEREO = register("mutedsingleshot_stereo");
     public static final SoundEvent PISTOL_RELOAD = register("pistol_reload");
 
     public static void load() {
