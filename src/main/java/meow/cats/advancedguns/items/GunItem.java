@@ -21,6 +21,7 @@ import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import java.util.function.Consumer;
 import static meow.cats.advancedguns.items.ModItems.AMMO;
+import static meow.cats.advancedguns.items.ModItems.BULLET;
 import static meow.cats.advancedguns.misc.sounds.*;
 import static meow.cats.advancedguns.utils.Utils.EVENT_BUS;
 
@@ -42,6 +43,7 @@ public class GunItem extends Item {
     public final Item mag;
     @Deprecated public int ammoCount;
     public Item ammo = AMMO;
+    public Item bullet = BULLET;
     public boolean explode = false;
     private boolean noMag = false;
     private boolean canAim = true;
@@ -131,6 +133,15 @@ public class GunItem extends Item {
         return this;
     }
 
+    public Item getBullet(){
+        return bullet;
+    }
+
+    public GunItem setBullet(Item item){
+        bullet = item;
+        return this;
+    }
+
     public GunItem forbidAim(){canAim = false; return this;}
 
     public GunItem setAimX(float i){aimX = i;return this;}
@@ -162,6 +173,7 @@ public class GunItem extends Item {
     }
 
     public void reload(Player player, ItemStack gunStack) {
+
         if (player.getCooldowns().isOnCooldown(gunStack.getItem().getDefaultInstance())) return;
 
         if (hasMagRn(gunStack)) {
@@ -172,13 +184,13 @@ public class GunItem extends Item {
                 requiredMag.setAmmoCount(magStack, ammoToSave);
                 if (freeSlot(player)) player.drop(magStack, true, Prediction.PREDICTED);
                 else player.drop(magStack, false, Prediction.PREDICTED);
-            } else {
-                AmmoItem requiredAmmo = (AmmoItem) this.ammo;
-                int ammoToSave = getAmmoCount(gunStack);
-                ItemStack ammoStack = new ItemStack(requiredAmmo, ammoToSave);
-                if (freeSlot(player)) player.drop(ammoStack, true, Prediction.PREDICTED);
-                else player.drop(ammoStack, false, Prediction.PREDICTED);
-            }
+//            } else {
+//                AmmoItem requiredAmmo = (AmmoItem) this.ammo;
+//                int ammoToSave = getAmmoCount(gunStack);
+//                ItemStack ammoStack = new ItemStack(requiredAmmo, ammoToSave);
+//                if (freeSlot(player)) player.drop(ammoStack, true, Prediction.PREDICTED);
+//                else player.drop(ammoStack, false, Prediction.PREDICTED);
+//            }
 
             addOrRemoveMag(gunStack, false);
             setAmmoCount(gunStack, 0);
@@ -188,6 +200,7 @@ public class GunItem extends Item {
                 serverPlayer.inventoryMenu.broadcastChanges();
             }
             return;
+        }
         }
 
         if (player.getAbilities().instabuild) {
@@ -304,7 +317,7 @@ public class GunItem extends Item {
                 );
             }
             else {
-                BulletEntity bullet = new BulletEntity(level, player, getBulletSpeed(), getBulletDamage(), getGravity(), getAirResistance()).shouldExplode(explode).setAmmo(ammo);
+                BulletEntity bullet = new BulletEntity(level, player, getBulletSpeed(), getBulletDamage(), getGravity(), getAirResistance()).shouldExplode(explode).setAmmoOrBullet(getBullet());
                 EVENT_BUS.post(new ShootEvent());
                 level.addFreshEntity(bullet);
 //                level.playSound(

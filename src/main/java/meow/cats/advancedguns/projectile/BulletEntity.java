@@ -36,13 +36,14 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import java.util.Optional;
 import static meow.cats.advancedguns.items.ModItems.AMMO;
+import static meow.cats.advancedguns.items.ModItems.BULLET;
 
 public class BulletEntity extends Projectile implements ItemSupplier {
     private final float baseDamage;
     private final float maxSpeed;
     private final float gravity;
     private final float airResistance;
-    private Item ammo = AMMO;
+    private Item ammo = BULLET;
     private boolean explode;
     private int shooterPingTicks = 0;
     private static final EntityDataAccessor<ItemStack> CUSTOM_DATA_ITEM_STACK = SynchedEntityData.defineId(BulletEntity.class, EntityDataSerializers.ITEM_STACK);
@@ -69,7 +70,7 @@ public class BulletEntity extends Projectile implements ItemSupplier {
         }
     }
 
-    public BulletEntity setAmmo(Item ammo) {
+    public BulletEntity setAmmoOrBullet(Item ammo) {
         this.ammo = ammo;
         this.entityData.set(CUSTOM_DATA_ITEM_STACK, new ItemStack(ammo));
         return this;

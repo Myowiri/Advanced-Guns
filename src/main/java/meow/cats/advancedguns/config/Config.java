@@ -13,15 +13,19 @@ public class Config {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final File CONFIG_FILE = new File(FabricLoader.getInstance().getConfigDir().toFile(), "advancedguns.json");
 
-    public static WeaponConfig ak47 = new WeaponConfig(35.0f, 13.0f, 0.0085f, 0.99f, 30, 45, 2);
-    public static WeaponConfig rpg = new WeaponConfig(4.5f, 35.0f, 0.008f, 0.995f, 1, 70, 10);
-    public static WeaponConfig awm = new WeaponConfig(47.0f, 30.0f, 0.0085f, 0.99f, 5, 70, 25);
-    public static WeaponConfig glock17 = new WeaponConfig(15.0f, 10.0f, 0.0245f, 0.99f, 17, 30, 10);
+    public static WeaponConfig ak47 = new WeaponConfig(35f, 13f, 0.0085f, 0.99f, 30, 45, 2);
+    public static WeaponConfig m14 = new WeaponConfig(42.5f, 10f, 0.0085f, 0.99f, 20, 2, 2);
+    public static WeaponConfig rpg = new WeaponConfig(4.5f, 23f, 0.008f, 0.995f, 1, 70, 10);
+    public static WeaponConfig awm = new WeaponConfig(47f, 23f, 0.0085f, 0.99f, 5, 70, 37);
+    public static WeaponConfig kar98k = new WeaponConfig(38f, 23f, 0.0085f, 0.99f, 5, 2, 48);
+    public static WeaponConfig glock17 = new WeaponConfig(15f, 10f, 0.0245f, 0.99f, 17, 30, 10);
 
-    private WeaponConfig ak_47;
-    private WeaponConfig rpg_launcher;
-    private WeaponConfig awm_sniper;
-    private WeaponConfig glock_17;
+    private WeaponConfig ak_47_config;
+    private WeaponConfig m14_config;
+    private WeaponConfig rpg_launcher_config;
+    private WeaponConfig awm_sniper_config;
+    private WeaponConfig kar98k_config;
+    private WeaponConfig glock_17_config;
 
     public static class WeaponConfig {
         public float speed;
@@ -59,10 +63,12 @@ public class Config {
         try (FileReader reader = new FileReader(CONFIG_FILE)) {
             Config parsedConfig = GSON.fromJson(reader, Config.class);
             if (parsedConfig != null) {
-                if (parsedConfig.ak_47 != null) ak47 = parsedConfig.ak_47;
-                if (parsedConfig.rpg_launcher != null) rpg = parsedConfig.rpg_launcher;
-                if (parsedConfig.awm_sniper != null) awm = parsedConfig.awm_sniper;
-                if (parsedConfig.glock_17 != null) glock17 = parsedConfig.glock_17;
+                if (parsedConfig.ak_47_config != null) ak47 = parsedConfig.ak_47_config;
+                if (parsedConfig.m14_config != null) m14 = parsedConfig.m14_config;
+                if (parsedConfig.rpg_launcher_config != null) rpg = parsedConfig.rpg_launcher_config;
+                if (parsedConfig.awm_sniper_config != null) awm = parsedConfig.awm_sniper_config;
+                if (parsedConfig.kar98k_config != null) kar98k = parsedConfig.kar98k_config;
+                if (parsedConfig.glock_17_config != null) glock17 = parsedConfig.glock_17_config;
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -72,10 +78,12 @@ public class Config {
     public static void save() {
         try (FileWriter writer = new FileWriter(CONFIG_FILE)) {
             Config configToSave = new Config();
-            configToSave.ak_47 = ak47;
-            configToSave.rpg_launcher = rpg;
-            configToSave.awm_sniper = awm;
-            configToSave.glock_17 = glock17;
+            configToSave.ak_47_config = ak47;
+            configToSave.m14_config = m14;
+            configToSave.rpg_launcher_config = rpg;
+            configToSave.awm_sniper_config = awm;
+            configToSave.kar98k_config = kar98k;
+            configToSave.glock_17_config = glock17;
 
             GSON.toJson(configToSave, writer);
         } catch (IOException e) {
