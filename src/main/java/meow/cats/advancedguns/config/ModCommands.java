@@ -4,7 +4,6 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.server.permissions.Permission;
 
 public class ModCommands {
 
@@ -19,7 +18,7 @@ public class ModCommands {
                     .then(Commands.literal("reload")
                             .executes(ctx -> {
                                 try {
-                                    Config.load();
+                                    ServerConfig.load();
 
                                     ctx.getSource().sendSuccess(() -> Component.literal("§a[Advanced Guns] Configuration reloaded successfully!"), true);
                                     return 1;

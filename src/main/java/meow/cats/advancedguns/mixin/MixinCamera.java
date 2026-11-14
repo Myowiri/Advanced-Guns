@@ -5,6 +5,7 @@ import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import meow.cats.Weapons;
 import meow.cats.advancedguns.items.GunItem;
 import net.minecraft.client.Camera;
+import net.minecraft.client.CameraType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
@@ -15,6 +16,9 @@ public abstract class MixinCamera {
 
     @ModifyReturnValue(method = "calculateFov", at = @At("RETURN"))
     private float modifyFov(float original) {
+        if (mc.options.getCameraType() != CameraType.FIRST_PERSON) return original;
+
+
         if (mc == null || mc.level == null || mc.player == null) {
             return original;
         }

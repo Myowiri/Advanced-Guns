@@ -1,6 +1,7 @@
 package meow.cats;
 
-import meow.cats.advancedguns.config.Config;
+import meow.cats.advancedguns.config.ClientConfig;
+import meow.cats.advancedguns.config.ServerConfig;
 import meow.cats.advancedguns.config.ModCommands;
 import meow.cats.advancedguns.event.EventManager;
 import meow.cats.advancedguns.items.GunItem;
@@ -48,13 +49,11 @@ public class Weapons implements ModInitializer, ClientModInitializer {
 				}
 			});
 		});
+
 		ModCommands.register();
-		Config.load();
+		ServerConfig.load();
 		sounds.load();
 		ModItems.initialize();
-
-
-
 	}
 
 	public static Identifier id(String path) {
@@ -63,9 +62,12 @@ public class Weapons implements ModInitializer, ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
+		ClientConfig.load();
+
 		eventManager = new EventManager();
-		zoom = new Zoom();
 		eventManager.init();
+
+		zoom = new Zoom();
 		EntityRendererRegistry.register(ModEntities.BULLET, ThrownItemRenderer::new);
 	}
 }

@@ -9,9 +9,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class Config {
+public class ServerConfig {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-    private static final File CONFIG_FILE = new File(FabricLoader.getInstance().getConfigDir().toFile(), "advancedguns.json");
+    private static final File CONFIG_FILE = new File(FabricLoader.getInstance().getConfigDir().toFile(), "advancedguns_server.json");
 
     public static WeaponConfig ak47 = new WeaponConfig(35f, 13f, 0.0085f, 0.99f, 30, 45, 2);
     public static WeaponConfig m14 = new WeaponConfig(42.5f, 10f, 0.0085f, 0.99f, 20, 2, 2);
@@ -61,7 +61,7 @@ public class Config {
         }
 
         try (FileReader reader = new FileReader(CONFIG_FILE)) {
-            Config parsedConfig = GSON.fromJson(reader, Config.class);
+            ServerConfig parsedConfig = GSON.fromJson(reader, ServerConfig.class);
             if (parsedConfig != null) {
                 if (parsedConfig.ak_47_config != null) ak47 = parsedConfig.ak_47_config;
                 if (parsedConfig.m14_config != null) m14 = parsedConfig.m14_config;
@@ -77,7 +77,7 @@ public class Config {
 
     public static void save() {
         try (FileWriter writer = new FileWriter(CONFIG_FILE)) {
-            Config configToSave = new Config();
+            ServerConfig configToSave = new ServerConfig();
             configToSave.ak_47_config = ak47;
             configToSave.m14_config = m14;
             configToSave.rpg_launcher_config = rpg;

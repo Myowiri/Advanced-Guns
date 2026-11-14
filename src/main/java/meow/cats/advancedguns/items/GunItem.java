@@ -1,6 +1,6 @@
 package meow.cats.advancedguns.items;
 
-import meow.cats.advancedguns.config.Config;
+import meow.cats.advancedguns.config.ServerConfig;
 import meow.cats.advancedguns.event.impl.ShootEvent;
 import meow.cats.advancedguns.projectile.BulletEntity;
 import net.minecraft.core.component.DataComponents;
@@ -25,12 +25,11 @@ import static meow.cats.advancedguns.items.ModItems.BULLET;
 import static meow.cats.advancedguns.misc.sounds.*;
 import static meow.cats.advancedguns.utils.Utils.EVENT_BUS;
 
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class GunItem extends Item {
 
-    private final Supplier<Config.WeaponConfig> configSupplier;
+    private final Supplier<ServerConfig.WeaponConfig> configSupplier;
 //    private final float bulletSpeed;
 //    private final float bulletDamage;
 //    private final float gravity;
@@ -64,7 +63,7 @@ public class GunItem extends Item {
 //        this.toolTipText = toolTipText;
 //        this.scope = scope;
 //    }
-    public GunItem(Properties properties, Supplier<Config.WeaponConfig> configSupplier, boolean hasScope, Item mag, String toolTipText) {
+    public GunItem(Properties properties, Supplier<ServerConfig.WeaponConfig> configSupplier, boolean hasScope, Item mag, String toolTipText) {
         super(properties);
         this.configSupplier = configSupplier;
         this.scope = hasScope;
@@ -74,7 +73,7 @@ public class GunItem extends Item {
 
 
 
-    private Config.WeaponConfig getConfig() {
+    private ServerConfig.WeaponConfig getConfig() {
         return this.configSupplier.get();
     }
 

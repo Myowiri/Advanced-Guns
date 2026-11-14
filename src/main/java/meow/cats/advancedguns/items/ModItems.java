@@ -1,7 +1,7 @@
 package meow.cats.advancedguns.items;
 
 import meow.cats.Weapons;
-import meow.cats.advancedguns.config.Config;
+import meow.cats.advancedguns.config.ServerConfig;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -69,37 +69,37 @@ public class ModItems {
     private static final ResourceKey<Item> AK47_KEY = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Weapons.MOD_ID, "ak-47"));
     public static final Item AK47 = Registry.register(BuiltInRegistries.ITEM, AK47_KEY,
             new GunItem(new Item.Properties().setId(AK47_KEY).stacksTo(1),
-                    () -> Config.ak47, false, AK47_MAGAZINE, ".7,62x39").setAimY(9.6f).forbidAim()
+                    () -> ServerConfig.ak47, false, AK47_MAGAZINE, ".7,62x39").setAimY(9.6f).forbidAim()
     );
 
     private static final ResourceKey<Item> M14_KEY = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Weapons.MOD_ID, "m14"));
     public static final Item M14 = Registry.register(BuiltInRegistries.ITEM, M14_KEY,
             new GunItem(new Item.Properties().setId(M14_KEY).stacksTo(1),
-                    () -> Config.m14, false, A762X51, ".7,62×51").setAimY(9.6f).setAmmo(A762X51).removeMag().forbidAim()
+                    () -> ServerConfig.m14, false, A762X51, ".7,62×51").setAimY(9.6f).setAmmo(A762X51).removeMag().forbidAim()
     );
 
     private static final ResourceKey<Item> RPG_KEY = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Weapons.MOD_ID, "rpg"));
     public static final Item RPG = Registry.register(BuiltInRegistries.ITEM, RPG_KEY,
             new GunItem(new Item.Properties().setId(RPG_KEY).stacksTo(1),
-                    () -> Config.rpg, false, PG7V_ROCKET, ".rpg_rocket").shouldExplode().setAmmo(PG7V_ROCKET).setBullet(PG7V_ROCKET).removeMag().forbidAim()
+                    () -> ServerConfig.rpg, false, PG7V_ROCKET, ".rpg_rocket").shouldExplode().setAmmo(PG7V_ROCKET).setBullet(PG7V_ROCKET).removeMag().forbidAim()
     );
 
     private static final ResourceKey<Item> AWM_KEY = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Weapons.MOD_ID, "awm"));
     public static final Item AWM = Registry.register(BuiltInRegistries.ITEM, AWM_KEY,
             new GunItem(new Item.Properties().setId(AWM_KEY).stacksTo(1),
-                    () -> Config.awm, true, AWM_MAGAZINE, ".7,62×67")
+                    () -> ServerConfig.awm, true, AWM_MAGAZINE, ".7,62×67")
     );
 
     private static final ResourceKey<Item> KAR98K_KEY = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Weapons.MOD_ID, "kar98k"));
     public static final Item KAR98K = Registry.register(BuiltInRegistries.ITEM, KAR98K_KEY,
             new GunItem(new Item.Properties().setId(KAR98K_KEY).stacksTo(1),
-                    () -> Config.kar98k, false, A792x57, ".7,92×57").setAmmo(A792x57).setBullet(A792x57).removeMag().forbidAim()
+                    () -> ServerConfig.kar98k, false, A792x57, ".7,92×57").setAmmo(A792x57).setBullet(A792x57).removeMag().forbidAim()
     );
 
     private static final ResourceKey<Item> GLOCK_17_KEY = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Weapons.MOD_ID, "glock_17"));
     public static final Item GLOCK17 = Registry.register(BuiltInRegistries.ITEM, GLOCK_17_KEY,
             new GunItem(new Item.Properties().setId(GLOCK_17_KEY).stacksTo(1),
-                    () -> Config.glock17, false, GLOCK_MAG, ".9×19").forbidAim()
+                    () -> ServerConfig.glock17, false, GLOCK_MAG, ".9×19").forbidAim()
     );
 
     private ModItems() {

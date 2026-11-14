@@ -9,7 +9,9 @@
 		"MixinCamera",
 		"MixinHud",
 		"MixinMouse",
-		"MixinHeldItemRenderer"
+		"MixinHeldItemRenderer",
+		"MixinHumanoidModel",
+		"MixinAccessibilityOptionsScreen"
 	],
 	"injectors": {
 		"defaultRequire": 1
