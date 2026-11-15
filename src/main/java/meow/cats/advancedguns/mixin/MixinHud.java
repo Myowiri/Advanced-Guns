@@ -1,12 +1,14 @@
 package meow.cats.advancedguns.mixin;
 
 
+import meow.cats.Weapons;
 import meow.cats.advancedguns.config.ClientConfig;
 import meow.cats.advancedguns.gui.HudRender;
 import meow.cats.advancedguns.items.GunItem;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.Hud;
+import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -33,16 +35,18 @@ public class MixinHud {
         if (mc == null || mc.level == null || mc.player == null ) {
             return;
         }
-        if (!ClientConfig.INSTANCE.Crosshair) ci.cancel();
 
-        net.minecraft.world.item.ItemStack handStack = mc.player.getMainHandItem();
-        if (handStack.getItem() instanceof GunItem gun)
-            if (gun.hasScope())
-                ci.cancel();
-        net.minecraft.world.item.ItemStack handStack2 = mc.player.getOffhandItem();
-        if (handStack2.getItem() instanceof GunItem gun)
-            if (gun.hasScope())
-                ci.cancel();
+        if (Weapons.isCrosshairHidden && mc.player.getMainHandItem().getItem() instanceof GunItem gun) {
+            ci.cancel();
+            return;
+        }
+
+        if (ClientConfig.INSTANCE.crosshairStyle != ClientConfig.CrosshairStyle.Default) {ci.cancel(); HudRender.renderCrosshair(graphics);}
+
+        ItemStack handStack = mc.player.getMainHandItem();
+        if (handStack.getItem() instanceof GunItem gun) if (gun.hasScope()) ci.cancel();
+       ItemStack handStack2 = mc.player.getOffhandItem();
+        if (handStack2.getItem() instanceof GunItem gun) if (gun.hasScope()) ci.cancel();
     }
 
 

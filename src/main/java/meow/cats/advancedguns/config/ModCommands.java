@@ -1,5 +1,6 @@
 package meow.cats.advancedguns.config;
 
+import meow.cats.Weapons;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
@@ -19,6 +20,7 @@ public class ModCommands {
                             .executes(ctx -> {
                                 try {
                                     ServerConfig.load();
+                                    Weapons.sync(ctx.getSource().getServer());
 
                                     ctx.getSource().sendSuccess(() -> Component.literal("§a[Advanced Guns] Configuration reloaded successfully!"), true);
                                     return 1;

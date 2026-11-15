@@ -14,17 +14,57 @@ public class HudRender {
 
     public static void render(GuiGraphicsExtractor gge){
         if(RenderScope(gge)) return;
-
         renderHud(gge);
     }
 
-    public static int getScreenHeight(){
-        return mc.getWindow().getGuiScaledHeight();
-    }
-
+    public static int getScreenHeight(){return mc.getWindow().getGuiScaledHeight();}
     public static int getScreenWidth(){
         return mc.getWindow().getGuiScaledWidth();
     }
+
+
+    public static void renderCrosshair(GuiGraphicsExtractor gge) {
+        if (mc.player == null) return;
+
+        ItemStack handStack = mc.player.getMainHandItem();
+        if (handStack.getItem() instanceof GunItem gun && gun.hasScope()) return;
+
+        ItemStack handStack2 = mc.player.getOffhandItem();
+        if (handStack2.getItem() instanceof GunItem gun && gun.hasScope()) return;
+
+        if (ClientConfig.INSTANCE.crosshairStyle != ClientConfig.CrosshairStyle.Custom) return;
+
+        float invScale = (float) (1.0 / mc.getWindow().getGuiScale());
+        int cx = mc.getWindow().getWidth() / 2;
+        int cy = mc.getWindow().getHeight() / 2;
+
+        int color = ClientConfig.INSTANCE.getCrosshairColor().getRGB();
+        float s = ClientConfig.INSTANCE.scale;
+        int thickness = 2;
+        int half = thickness / 2;
+
+        gge.pose().pushMatrix();
+        gge.pose().scale(invScale, invScale);
+        gge.pose().translate(cx, cy);
+        gge.pose().scale(s, s);
+        gge.pose().translate(-cx, -cy);
+
+        if (ClientConfig.INSTANCE.centerDot) {
+            gge.fill(cx - half, cy - half, cx - half + thickness, cy - half + thickness, color);
+        }
+
+        if (ClientConfig.INSTANCE.lines) {
+            int pad = ClientConfig.INSTANCE.padding;
+            int len = ClientConfig.INSTANCE.width;
+            gge.fill(cx - len - pad, cy - half, cx - pad, cy - half + thickness, color);
+            gge.fill(cx - half, cy - len - pad, cx - half + thickness, cy - pad, color);
+            gge.fill(cx + pad, cy - half, cx + len + pad, cy - half + thickness, color);
+            gge.fill(cx - half, cy + pad, cx - half + thickness, cy + len + pad, color);
+        }
+
+        gge.pose().popMatrix();
+    }
+
 
 
     public static boolean RenderScope(GuiGraphicsExtractor graphics){
@@ -75,6 +115,7 @@ public class HudRender {
             String ammoCountText = ammoCount + "/" + maxAmmoCount;
             String hasMagText = Boolean.toString(gun.hasMagRn(heldStack));
             String coolDownString = Integer.toString(coolDown) ;
+
 
             graphics.text(mc.font, ammoCountText, getScreenWidth()-1-mc.font.width(ammoCountText) , getScreenHeight()-10, -1);
             graphics.text(mc.font, hasMagText, getScreenWidth()-1-mc.font.width(hasMagText) , getScreenHeight()-20, -1);

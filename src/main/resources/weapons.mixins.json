@@ -1,22 +1,26 @@
 {
-	"required": true,
-	"package": "meow.cats.advancedguns.mixin",
-	"compatibilityLevel": "JAVA_21",
-	"mixins": [
-		"MixinOptions",
-		"MixinLocalPlayer",
-		"MixinMinecraft",
-		"MixinCamera",
-		"MixinHud",
-		"MixinMouse",
-		"MixinHeldItemRenderer",
-		"MixinHumanoidModel",
-		"MixinAccessibilityOptionsScreen"
-	],
-	"injectors": {
-		"defaultRequire": 1
-	},
-	"overwrites": {
-		"requireAnnotations": true
-	}
+  "required": true,
+  "package": "meow.cats.advancedguns.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "MixinAccessibilityOptionsScreen",
+    "MixinButton",
+    "MixinCamera",
+    "MixinHeldItemRenderer",
+    "MixinHud",
+    "MixinHumanoidModel",
+    "MixinLocalPlayer",
+    "MixinMinecraft",
+    "MixinMouse",
+    "MixinOptions"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  },
+  "client": [
+    "MixinLivingEntityRenderer"
+  ]
 }

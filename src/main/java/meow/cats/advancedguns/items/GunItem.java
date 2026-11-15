@@ -6,6 +6,7 @@ import meow.cats.advancedguns.projectile.BulletEntity;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Prediction;
 import net.minecraft.world.InteractionHand;
@@ -302,20 +303,7 @@ public class GunItem extends Item {
 //        ItemStack itemstack = player.getItemInHand(hand);
 //        player.startUsingItem(hand);
         if (canShoot) {
-            if (level.isClientSide()) {
-                float pitch = 1.0f + (level.getRandom().nextFloat() - 0.5f) * 0.08f;
-                level.playLocalSound(
-                        player.getX(),
-                        player.getY() + player.getEyeHeight(),
-                        player.getZ(),
-                        MUTED_SINGLE_SHOT_MONO,
-                        SoundSource.PLAYERS,
-                        1.0f,
-                        pitch,
-                        false
-                );
-            }
-            else {
+            if (!level.isClientSide()) {
                 BulletEntity bullet = new BulletEntity(level, player, getBulletSpeed(), getBulletDamage(), getGravity(), getAirResistance()).shouldExplode(explode).setAmmoOrBullet(getBullet());
                 EVENT_BUS.post(new ShootEvent());
                 level.addFreshEntity(bullet);
@@ -349,7 +337,24 @@ public class GunItem extends Item {
     }
 
     public void playDynamicShotSound(Player shooter) {
-        if (!(shooter.level() instanceof net.minecraft.server.level.ServerLevel serverLevel)) return;
+        if (!(shooter.level() instanceof ServerLevel serverLevel)) return;
+
+        if (shooter instanceof net.minecraft.server.level.ServerPlayer serverShooter) {
+            float pitch = 1.0f + (serverLevel.getRandom().nextFloat() - 0.5f) * 0.08f;
+            net.minecraft.core.Holder<net.minecraft.sounds.SoundEvent> selfSoundHolder =
+                    net.minecraft.core.registries.BuiltInRegistries.SOUND_EVENT.wrapAsHolder(MUTED_SINGLE_SHOT_MONO);
+
+            serverShooter.connection.send(new net.minecraft.network.protocol.game.ClientboundSoundPacket(
+                    selfSoundHolder,
+                    SoundSource.PLAYERS,
+                    shooter.getX(),
+                    shooter.getY() + shooter.getEyeHeight(),
+                    shooter.getZ(),
+                    1.0f,
+                    pitch,
+                    serverLevel.getRandom().nextLong()
+            ));
+        }
 
         double maxDistance = 200.0;
         net.minecraft.world.phys.Vec3 look = shooter.getLookAngle();
