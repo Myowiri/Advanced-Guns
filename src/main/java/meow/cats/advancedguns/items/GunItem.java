@@ -1,5 +1,6 @@
 package meow.cats.advancedguns.items;
 
+import meow.cats.Weapons;
 import meow.cats.advancedguns.config.ServerConfig;
 import meow.cats.advancedguns.event.impl.ShootEvent;
 import meow.cats.advancedguns.projectile.BulletEntity;
@@ -21,49 +22,35 @@ import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import java.util.function.Consumer;
-import static meow.cats.advancedguns.items.ModItems.AMMO;
+import static meow.cats.advancedguns.items.ModItems.A762x39;
 import static meow.cats.advancedguns.items.ModItems.BULLET;
 import static meow.cats.advancedguns.misc.sounds.*;
 import static meow.cats.advancedguns.utils.Utils.EVENT_BUS;
+import static meow.cats.advancedguns.utils.Utils.mc;
 
 import java.util.function.Supplier;
 
 public class GunItem extends Item {
 
     private final Supplier<ServerConfig.WeaponConfig> configSupplier;
-//    private final float bulletSpeed;
-//    private final float bulletDamage;
-//    private final float gravity;
-//    private final float airResistance;
     private final boolean scope;
     private final String toolTipText;
-//    public final int reloadCoolDown;
-//    public final int shotCoolDown;
-//    public final int getMaxMag();
     public final Item mag;
     @Deprecated public int ammoCount;
-    public Item ammo = AMMO;
+    public Item ammo = A762x39;
     public Item bullet = BULLET;
+    public boolean auto = false;
+    public boolean semi = true;
+    public Mode currentMode = Mode.Semi;
     public boolean explode = false;
     private boolean noMag = false;
     private boolean canAim = true;
+    public boolean farCheck = false;
+    public int farDis = 0;
+    public float farDamage = 0;
     private float aimY = 2;
     private float aimZ = 0;
     private float aimX = -9;
-//    public GunItem(Properties properties, float bulletSpeed, float bulletDamage, float gravity, float airResistance, int getMaxMag(), Item mag, int reloadCoolDown, int shotCoolDown, boolean scope,  String toolTipText) {
-//        super(properties);
-//
-//        this.bulletSpeed = bulletSpeed;
-//        this.bulletDamage = bulletDamage;
-//        this.gravity = gravity;
-//        this.airResistance = airResistance;
-//        this.getMaxMag() = getMaxMag();
-//        this.mag = mag;
-//        this.shotCoolDown = shotCoolDown;
-//        this.reloadCoolDown = reloadCoolDown;
-//        this.toolTipText = toolTipText;
-//        this.scope = scope;
-//    }
     public GunItem(Properties properties, Supplier<ServerConfig.WeaponConfig> configSupplier, boolean hasScope, Item mag, String toolTipText) {
         super(properties);
         this.configSupplier = configSupplier;
@@ -71,7 +58,6 @@ public class GunItem extends Item {
         this.toolTipText = toolTipText;
         this.mag = mag;
     }
-
 
 
     private ServerConfig.WeaponConfig getConfig() {
@@ -115,10 +101,9 @@ public class GunItem extends Item {
     }
 
 
-    public GunItem removeMag(){
-        noMag = true;
-        return this;
-    }
+
+
+    public GunItem removeMag(){noMag = true;return this;}
 
     public boolean hasScope(){
         return scope;
@@ -154,6 +139,31 @@ public class GunItem extends Item {
     public float getAimZ(){return aimZ;}
 
     public boolean canAim(){ return canAim;}
+
+    public GunItem Auto(){auto = true;return this;}
+    public GunItem noSemi(){semi = false;return this;}
+
+    public GunItem setFarDamage(float farDamage, int farDis) {
+        this.farDamage = farDamage;
+        this.farDis = farDis;
+        this.farCheck = true;
+        return this;
+    }
+
+    public void changeMode(){
+        if (!auto || !semi) return;
+        if (currentMode == Mode.Auto) currentMode = Mode.Semi; else currentMode = Mode.Auto;
+        mc.player.sendOverlayMessage(Component.literal(currentMode.toString()));
+    }
+
+    public Mode getCurrentMode(){
+        return currentMode;
+    }
+
+    public GunItem setDefaultMode(Mode mode){
+        currentMode = mode;
+        return this;
+    }
 
     public boolean hasMagRn(ItemStack stack) {
         CustomData customData = stack.get(DataComponents.CUSTOM_DATA);
@@ -273,8 +283,6 @@ public class GunItem extends Item {
 
 
 
-
-
     @Override
     public ItemUseAnimation getUseAnimation(ItemStack stack) {
         return ItemUseAnimation.NONE;
@@ -295,16 +303,26 @@ public class GunItem extends Item {
                 .withStyle(net.minecraft.ChatFormatting.YELLOW));
     }
 
-    @Override
-    public InteractionResult use(Level level, Player player, InteractionHand hand) {
+
+//    @Override
+//    public InteractionResult use(Level level, Player player, InteractionHand hand) {
+//        ItemStack handStack = player.getMainHandItem();
+//        if (handStack.getItem() instanceof GunItem gun) {
+//            Weapons.zoom.active = !Weapons.zoom.active;
+//        }
+//        return InteractionResult.CONSUME;
+//    }
+
+    public void shoot(Level level, Player player, InteractionHand hand) {
         ItemStack gunStack = player.getItemInHand(hand);
+        if (player.getCooldowns().isOnCooldown(gunStack.getItem().getDefaultInstance())) return;
         int currentAmmo = getAmmoCount(gunStack);
         boolean canShoot = currentAmmo > 0 || player.getAbilities().instabuild;
 //        ItemStack itemstack = player.getItemInHand(hand);
 //        player.startUsingItem(hand);
         if (canShoot) {
             if (!level.isClientSide()) {
-                BulletEntity bullet = new BulletEntity(level, player, getBulletSpeed(), getBulletDamage(), getGravity(), getAirResistance()).shouldExplode(explode).setAmmoOrBullet(getBullet());
+                BulletEntity bullet = new BulletEntity(level, player, getBulletSpeed(), getBulletDamage(), getGravity(), getAirResistance()).shouldExplode(explode).setAmmoOrBullet(getBullet()).setFarDamage(farDamage, farDis, farCheck);
                 EVENT_BUS.post(new ShootEvent());
                 level.addFreshEntity(bullet);
 //                level.playSound(
@@ -330,10 +348,8 @@ public class GunItem extends Item {
 
             player.getCooldowns().addCooldown(gunStack.getItem().getDefaultInstance(), getShotCoolDown());
             if (noMag && currentAmmo-1 == 0) addOrRemoveMag(gunStack, false);
-            return InteractionResult.CONSUME;
         }
 
-        return InteractionResult.FAIL;
     }
 
     public void playDynamicShotSound(Player shooter) {
@@ -418,6 +434,11 @@ public class GunItem extends Item {
             }
         }
         return false;
+    }
+
+    public enum Mode{
+        Semi,
+        Auto
     }
 
 }

@@ -25,7 +25,7 @@ public class HudRender {
 
     public static void renderCrosshair(GuiGraphicsExtractor gge) {
         if (mc.player == null) return;
-
+        if (mc.options.getCameraType() != CameraType.FIRST_PERSON) return;
         ItemStack handStack = mc.player.getMainHandItem();
         if (handStack.getItem() instanceof GunItem gun && gun.hasScope()) return;
 
@@ -114,12 +114,15 @@ public class HudRender {
 
             String ammoCountText = ammoCount + "/" + maxAmmoCount;
             String hasMagText = Boolean.toString(gun.hasMagRn(heldStack));
-            String coolDownString = Integer.toString(coolDown) ;
+            String coolDownString = Integer.toString(coolDown);
+            String currentMode = gun.getCurrentMode().toString();
 
+            int y = 10;
 
-            graphics.text(mc.font, ammoCountText, getScreenWidth()-1-mc.font.width(ammoCountText) , getScreenHeight()-10, -1);
-            graphics.text(mc.font, hasMagText, getScreenWidth()-1-mc.font.width(hasMagText) , getScreenHeight()-20, -1);
-            graphics.text(mc.font, coolDownString, getScreenWidth()-1-mc.font.width(coolDownString)  , getScreenHeight()-30, -1);
+            if (ClientConfig.INSTANCE.ammoCounter){graphics.text(mc.font, ammoCountText, getScreenWidth()-1-mc.font.width(ammoCountText) , getScreenHeight()-y, -1); y +=10;}
+            if (ClientConfig.INSTANCE.magIndicator){graphics.text(mc.font, hasMagText, getScreenWidth()-1-mc.font.width(hasMagText) , getScreenHeight()-y, -1); y+=10;}
+            if (ClientConfig.INSTANCE.mode){graphics.text(mc.font, currentMode, getScreenWidth()-1-mc.font.width(currentMode) , getScreenHeight()-y, -1); y+=10;}
+            if (ClientConfig.INSTANCE.coolDown){graphics.text(mc.font, coolDownString, getScreenWidth()-1-mc.font.width(coolDownString)  , getScreenHeight()-y, -1); y+=10;}
 
         }
 

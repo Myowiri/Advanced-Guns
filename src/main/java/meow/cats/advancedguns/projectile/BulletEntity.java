@@ -1,5 +1,6 @@
 package meow.cats.advancedguns.projectile;
 
+import meow.cats.advancedguns.items.GunItem;
 import meow.cats.advancedguns.network.LagCompensator;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -35,7 +36,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import java.util.Optional;
-import static meow.cats.advancedguns.items.ModItems.AMMO;
+import static meow.cats.advancedguns.items.ModItems.A762x39;
 import static meow.cats.advancedguns.items.ModItems.BULLET;
 
 public class BulletEntity extends Projectile implements ItemSupplier {
@@ -46,7 +47,19 @@ public class BulletEntity extends Projectile implements ItemSupplier {
     private Item ammo = BULLET;
     private boolean explode;
     private int shooterPingTicks = 0;
+    public boolean farCheck = false;
+    public int farDis = 0;
+    public float farDamage = 0;
     private static final EntityDataAccessor<ItemStack> CUSTOM_DATA_ITEM_STACK = SynchedEntityData.defineId(BulletEntity.class, EntityDataSerializers.ITEM_STACK);
+    private Vec3 spawnPos = Vec3.ZERO;
+
+
+    public BulletEntity setFarDamage(float farDamage, int farDis, boolean farCheck) {
+        this.farDamage = farDamage;
+        this.farDis = farDis;
+        this.farCheck = farCheck;
+        return this;
+    }
 
     public BulletEntity(EntityType<? extends BulletEntity> type, Level level) {
         super(type, level);
@@ -54,6 +67,7 @@ public class BulletEntity extends Projectile implements ItemSupplier {
         this.maxSpeed = 15.0f;
         this.gravity = 0.0245f;
         this.airResistance = 0.99f;
+
     }
 
     public BulletEntity(Level level, LivingEntity owner, float speed, float damage, float gravity, float airResistance) {
@@ -63,6 +77,9 @@ public class BulletEntity extends Projectile implements ItemSupplier {
         this.setDeltaMovement(owner.getLookAngle().scale(speed));
         this.baseDamage = damage;
         this.maxSpeed = speed;
+        Vec3 eyePos = new Vec3(owner.getX(), owner.getEyeY() - 0.1, owner.getZ());
+        this.setPos(eyePos);
+        this.spawnPos = eyePos;
         this.gravity = gravity;
         this.airResistance = airResistance;
         if (owner instanceof ServerPlayer serverPlayer) {
@@ -83,7 +100,7 @@ public class BulletEntity extends Projectile implements ItemSupplier {
 
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder entityData) {
-        entityData.define(CUSTOM_DATA_ITEM_STACK, new ItemStack(AMMO));
+        entityData.define(CUSTOM_DATA_ITEM_STACK, new ItemStack(A762x39));
     }
 
     private HitResult getBulletHitResult(Vec3 startPos, Vec3 endPos) {
@@ -162,7 +179,11 @@ public class BulletEntity extends Projectile implements ItemSupplier {
             EntityHitResult entityHitResult = (EntityHitResult) hitResult;
             float currentSpeed = (float) motion.length();
             float speedRatio = maxSpeed > 0 ? (currentSpeed / maxSpeed) : 0;
-            float calculatedDamage = Math.max(1.0f, baseDamage * speedRatio);
+            float calculatedDamage = baseDamage;
+            if (farCheck && this.position().distanceToSqr(spawnPos) > ((double) farDis * farDis)) {
+                calculatedDamage *= farDamage;
+            }
+            calculatedDamage = Math.max(1.0f, calculatedDamage * speedRatio);
             if (explode) {
                 if (!this.level().isClientSide()) {
                     this.level().explode(this, this.getX(), this.getY(), this.getZ(), 4.5f, false, Level.ExplosionInteraction.TNT);

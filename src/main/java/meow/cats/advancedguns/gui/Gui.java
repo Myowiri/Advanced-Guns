@@ -58,7 +58,7 @@ public class Gui extends CatGui {
         buttons.add(new ColorPicker(ClientConfig.INSTANCE.getCrosshairColor(), "Color", v -> {ClientConfig.INSTANCE.setCrosshairColor(v);ClientConfig.save();}));
         buttons.add(new BooleanButton(ClientConfig.INSTANCE.centerDot, "Center Dot", v ->{ClientConfig.INSTANCE.centerDot = v; ClientConfig.save();}));
         buttons.add(new BooleanButton(ClientConfig.INSTANCE.lines, "Lines", v ->{ClientConfig.INSTANCE.lines = v; ClientConfig.save();}));
-        buttons.add(new FloatSlider("Scale", ClientConfig.INSTANCE.scale, .7f, 3f, v -> {ClientConfig.INSTANCE.scale = v; ClientConfig.save();} ));
+        buttons.add(new Slider("Scale", ClientConfig.INSTANCE.scale, .7f, 3f, v -> {ClientConfig.INSTANCE.scale = v; ClientConfig.save();} ));
         buttons.add(new IntegerSlider("Length", ClientConfig.INSTANCE.width, 0, 10, v -> {ClientConfig.INSTANCE.width = Math.round(v); ClientConfig.save();} ));
         buttons.add(new IntegerSlider("Padding", ClientConfig.INSTANCE.padding, 0, 10, v -> {ClientConfig.INSTANCE.padding = Math.round(v); ClientConfig.save();} ));
     }

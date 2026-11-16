@@ -23,12 +23,13 @@ public class ServerConfig {
     public static boolean disableCrosshair = false;
     public static boolean disableNameTags = false;
 
-    public static WeaponConfig ak47 = new WeaponConfig(35f, 13f, 0.0085f, 0.99f, 30, 45, 2);
-    public static WeaponConfig m14 = new WeaponConfig(42.5f, 10f, 0.0085f, 0.99f, 20, 2, 2);
+    public static WeaponConfig ak47 = new WeaponConfig(35f, 12f, 0.0085f, 0.99f, 30, 45, 2);
+    public static WeaponConfig m14 = new WeaponConfig(42.5f, 14f, 0.0085f, 0.99f, 20, 2, 2);
     public static WeaponConfig rpg = new WeaponConfig(4.5f, 23f, 0.008f, 0.995f, 1, 70, 10);
-    public static WeaponConfig awm = new WeaponConfig(47f, 23f, 0.0085f, 0.99f, 5, 70, 37);
-    public static WeaponConfig kar98k = new WeaponConfig(38f, 23f, 0.0085f, 0.99f, 5, 2, 48);
+    public static WeaponConfig awm = new WeaponConfig(47f, 23f, 0.0085f, 0.99f, 5, 70, 32);
+    public static WeaponConfig kar98k = new WeaponConfig(38f, 18f, 0.0085f, 0.99f, 5, 4, 32);
     public static WeaponConfig glock17 = new WeaponConfig(15f, 10f, 0.0245f, 0.99f, 17, 30, 10);
+    public static WeaponConfig remington870 = new WeaponConfig(20f, 21f, 0.0245f, 0.99f, 7, 10, 18);
 
     private Boolean disable_crosshair;
     private Boolean disable_nametags;
@@ -39,6 +40,7 @@ public class ServerConfig {
     private WeaponConfig awm_sniper_config;
     private WeaponConfig kar98k_config;
     private WeaponConfig glock_17_config;
+    private WeaponConfig remington870_config;
 
     public static class WeaponConfig {
         public float speed;
@@ -84,6 +86,7 @@ public class ServerConfig {
                 if (parsedConfig.awm_sniper_config != null) awm = parsedConfig.awm_sniper_config;
                 if (parsedConfig.kar98k_config != null) kar98k = parsedConfig.kar98k_config;
                 if (parsedConfig.glock_17_config != null) glock17 = parsedConfig.glock_17_config;
+                if (parsedConfig.remington870_config != null) remington870 = parsedConfig.remington870_config;
             }
             save();
         } catch (IOException e) {
@@ -102,6 +105,7 @@ public class ServerConfig {
             configToSave.awm_sniper_config = awm;
             configToSave.kar98k_config = kar98k;
             configToSave.glock_17_config = glock17;
+            configToSave.remington870_config = remington870;
 
             GSON.toJson(configToSave, writer);
         } catch (IOException e) {

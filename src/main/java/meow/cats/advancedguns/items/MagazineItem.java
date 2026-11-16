@@ -13,12 +13,12 @@ import net.minecraft.world.item.component.TooltipDisplay;
 
 import java.util.function.Consumer;
 
-import static meow.cats.advancedguns.items.ModItems.AMMO;
+import static meow.cats.advancedguns.items.ModItems.A762x39;
 
 public class MagazineItem extends Item {
 
     public final int maxAmmo;
-    public Item ammoItem = AMMO;
+    public Item ammoItem = A762x39;
 
 
     public MagazineItem(Properties properties, int maxAmmo) {

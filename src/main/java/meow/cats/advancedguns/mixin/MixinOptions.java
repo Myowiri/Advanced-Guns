@@ -22,6 +22,7 @@ public class MixinOptions {
         Options options = (Options) (Object) this;
         this.keyMappings = ArrayUtils.add(this.keyMappings, ClientKeys.RELOAD_BIND);
         this.keyMappings = ArrayUtils.add(this.keyMappings, ClientKeys.CHECK_BIND);
+        this.keyMappings = ArrayUtils.add(this.keyMappings, ClientKeys.MODE_BIND);
         this.keyMappings = ArrayUtils.add(this.keyMappings, ClientKeys.ZOOM_BIND);
     }
 

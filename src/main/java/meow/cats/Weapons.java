@@ -12,6 +12,7 @@ import meow.cats.advancedguns.misc.sounds;
 import meow.cats.advancedguns.network.CrosshairStatePayload;
 import meow.cats.advancedguns.network.NameTagsStatePayload;
 import meow.cats.advancedguns.network.ReloadPayload;
+import meow.cats.advancedguns.network.ShootPayload;
 import meow.cats.advancedguns.projectile.ModEntities;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.ModInitializer;
@@ -46,6 +47,7 @@ public class Weapons implements ModInitializer, ClientModInitializer {
 		ServerConfig.load();
 
 		PayloadTypeRegistry.serverboundPlay().register(ReloadPayload.TYPE, ReloadPayload.CODEC);
+		PayloadTypeRegistry.serverboundPlay().register(ShootPayload.TYPE, ShootPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(CrosshairStatePayload.TYPE, CrosshairStatePayload.STREAM_CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(NameTagsStatePayload.TYPE, NameTagsStatePayload.STREAM_CODEC);
 
@@ -58,6 +60,16 @@ public class Weapons implements ModInitializer, ClientModInitializer {
 				}
 				if (stack.getItem() instanceof MagazineItem mag) {
 					mag.addAmmo(player, stack);
+				}
+			});
+		});
+
+		ServerPlayNetworking.registerGlobalReceiver(ShootPayload.TYPE, (payload, context) -> {
+			context.server().execute(() -> {
+				ServerPlayer player = context.player();
+				ItemStack stack = player.getItemInHand(InteractionHand.MAIN_HAND);
+				if (stack.getItem() instanceof GunItem gun) {
+					gun.shoot(player.level(), player, InteractionHand.MAIN_HAND);
 				}
 			});
 		});
@@ -115,11 +127,11 @@ public class Weapons implements ModInitializer, ClientModInitializer {
 			Weapons.areNametagsHidden = false;
 		});
 
-
 		eventManager = new EventManager();
 		eventManager.init();
 
 		zoom = new Zoom();
+		EntityRendererRegistry.register(ModEntities.GRENADE, ThrownItemRenderer::new);
 		EntityRendererRegistry.register(ModEntities.BULLET, ThrownItemRenderer::new);
 	}
 }

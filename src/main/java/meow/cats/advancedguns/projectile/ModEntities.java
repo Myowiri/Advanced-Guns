@@ -20,5 +20,14 @@ public class ModEntities {
                     .sized(0.25f, 0.25f)
                     .build(BULLET_KEY)
     );
+    public static final ResourceKey<EntityType<?>> GRENADE_KEY =
+            ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(Weapons.MOD_ID, "grenade"));
 
+    public static final EntityType<GrenadeEntity> GRENADE = Registry.register(
+            BuiltInRegistries.ENTITY_TYPE,
+            Identifier.fromNamespaceAndPath(Weapons.MOD_ID, "grenade"),
+            EntityType.Builder.<GrenadeEntity>of(GrenadeEntity::new, MobCategory.MISC)
+                    .sized(0.25f, 0.25f)
+                    .build(GRENADE_KEY)
+    );
 }

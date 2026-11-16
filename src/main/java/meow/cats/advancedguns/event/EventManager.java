@@ -30,7 +30,11 @@ public class EventManager  {
         if (mc.player == null )
             return;
         updateBinds(event.getPlayer());
+
+        doShoot();
+
     }
+
 
     public void updateBinds(LocalPlayer player){
         if (ClientKeys.RELOAD_BIND.consumeClick()) {
@@ -57,11 +61,21 @@ public class EventManager  {
             }
         }
 
+        if (ClientKeys.MODE_BIND.consumeClick()) {
+            net.minecraft.world.item.ItemStack handStack = player.getMainHandItem();
+            if (handStack.getItem() instanceof GunItem gun) {
+                gun.changeMode();
+            }
+        }
+
     }
 
     @Subscribe
     public void onShoot(ShootEvent event){
     }
 
+    public void doShoot(){
+
+    }
 
 }

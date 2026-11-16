@@ -15,10 +15,11 @@ public class ClientConfig {
     private static final Path PATH = FabricLoader.getInstance().getConfigDir().resolve("advancedguns_client.json");
 
 
-    public boolean hud = false;
+    public boolean hud = true;
     public boolean ammoCounter = true;
     public boolean magIndicator = true;
     public boolean coolDown = true;
+    public boolean mode = true;
 
 
     public enum CrosshairStyle {Default, Custom, None}
