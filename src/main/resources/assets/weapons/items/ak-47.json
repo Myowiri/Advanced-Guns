@@ -1,6 +1,14 @@
 {
   "model": {
-    "type": "minecraft:model",
-    "model": "weapons:item/ak-47"
+    "type": "minecraft:condition",
+    "property": "weapons:has_magazine",
+    "on_true": {
+      "type": "minecraft:model",
+      "model": "weapons:item/ak-47/ak-47_mag"
+    },
+    "on_false": {
+      "type": "minecraft:model",
+      "model": "weapons:item/ak-47/ak-47_no_mag"
+    }
   }
 }

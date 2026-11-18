@@ -51,6 +51,23 @@ public class GunItem extends Item {
     private float aimY = 2;
     private float aimZ = 0;
     private float aimX = -9;
+
+    public boolean сanPenetrateThroughLeaves = true;
+
+    public boolean mhR = false;
+    public float mhX = 0f;
+    public float mhY = 0f;
+    public float mhZ = 0f;
+    public float mhRX = 0f;
+    public float mhRY = 0f;
+
+    public boolean ohR = false;
+    public float ohX = 0f;
+    public float ohY = 0f;
+    public float ohZ = 0f;
+    public float ohRX = 0f;
+    public float ohRY = 0f;
+
     public GunItem(Properties properties, Supplier<ServerConfig.WeaponConfig> configSupplier, boolean hasScope, Item mag, String toolTipText) {
         super(properties);
         this.configSupplier = configSupplier;
@@ -71,8 +88,6 @@ public class GunItem extends Item {
     public int getMaxMag() { return getConfig().getMaxMag(); }
     public int getShotCoolDown() { return getConfig().getShotCooldown(); }
     public int getReloadCoolDown() { return getConfig().getReloadCooldown(); }
-
-
 
     public int getAmmoCount(ItemStack stack) {
         CustomData customData = stack.get(DataComponents.CUSTOM_DATA);
@@ -143,6 +158,48 @@ public class GunItem extends Item {
     public GunItem Auto(){auto = true;return this;}
     public GunItem noSemi(){semi = false;return this;}
 
+    public boolean сanPenetrateThroughLeaves(){
+        return this.сanPenetrateThroughLeaves;
+    }
+
+    public GunItem canNotPenetrateThroughLeaves(){
+        this.сanPenetrateThroughLeaves = false;
+        return this;
+    }
+
+    public boolean MhR(){return mhR;}
+    public float getMhX(){return mhX;}
+    public float getMhY(){return mhY;}
+    public float getMhZ(){return mhZ;}
+    public float getMhRX(){return mhRX;}
+    public float getMhRY(){return mhRY;}
+
+    public boolean OhR(){return ohR;}
+    public float getOhX(){return ohX;}
+    public float getOhY(){return ohY;}
+    public float getOhZ(){return ohZ;}
+    public float getOhRX(){return ohRX;}
+    public float getOhRY(){return ohRY;}
+
+    public GunItem addOffHand(float x, float y, float z, float ohRX, float ohRY){
+        ohR = true;
+        ohX = x;
+        ohY = y;
+        ohZ = z;
+        this.ohRX = ohRX;
+        this.ohRY = ohRY;
+        return this;
+    }
+    public GunItem addMainHand(float x, float y, float z, float mhRX, float mhRY){
+        mhR = true;
+        mhX = x;
+        mhY = y;
+        mhZ = z;
+        this.mhRX = mhRX;
+        this.mhRY = mhRY;
+        return this;
+    }
+
     public GunItem setFarDamage(float farDamage, int farDis) {
         this.farDamage = farDamage;
         this.farDis = farDis;
@@ -163,6 +220,10 @@ public class GunItem extends Item {
     public GunItem setDefaultMode(Mode mode){
         currentMode = mode;
         return this;
+    }
+
+    public boolean isNoMag() {
+        return this.noMag;
     }
 
     public boolean hasMagRn(ItemStack stack) {
@@ -282,18 +343,6 @@ public class GunItem extends Item {
 
 
 
-
-    @Override
-    public ItemUseAnimation getUseAnimation(ItemStack stack) {
-        return ItemUseAnimation.NONE;
-    }
-
-    @Override
-    public int getUseDuration(ItemStack stack, LivingEntity entity) {
-
-        return 72000;
-    }
-
     @Override
     public void appendHoverText(final ItemStack itemStack, final TooltipContext context, final TooltipDisplay display, final Consumer<Component> builder, final TooltipFlag tooltipFlag) {
 //        builder.accept(net.minecraft.network.chat.Component.empty());
@@ -322,7 +371,7 @@ public class GunItem extends Item {
 //        player.startUsingItem(hand);
         if (canShoot) {
             if (!level.isClientSide()) {
-                BulletEntity bullet = new BulletEntity(level, player, getBulletSpeed(), getBulletDamage(), getGravity(), getAirResistance()).shouldExplode(explode).setAmmoOrBullet(getBullet()).setFarDamage(farDamage, farDis, farCheck);
+                BulletEntity bullet = new BulletEntity(level, player, getBulletSpeed(), getBulletDamage(), getGravity(), getAirResistance(), сanPenetrateThroughLeaves()).shouldExplode(explode).setAmmoOrBullet(getBullet()).setFarDamage(farDamage, farDis, farCheck);
                 EVENT_BUS.post(new ShootEvent());
                 level.addFreshEntity(bullet);
 //                level.playSound(

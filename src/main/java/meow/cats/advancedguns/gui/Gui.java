@@ -8,7 +8,7 @@ public class Gui extends CatGui {
 
 
     public enum PAGE{
-        Hud,
+        Main,
         Crosshair
     }
 
@@ -33,23 +33,32 @@ public class Gui extends CatGui {
     @Override
     public void addButtons() {
 
-        buttons.add(new Button("Hud", v -> {currentPage = PAGE.Hud;refreshButtons();}).setSecondColor(currentPage == PAGE.Hud ? getSecondColor() : getMainColor()).doNotSpace().setWidth(80));
+        buttons.add(new Button("Main", v -> {currentPage = PAGE.Main;refreshButtons();}).setSecondColor(currentPage == PAGE.Main ? getSecondColor() : getMainColor()).doNotSpace().setWidth(80));
 
         buttons.add(new Button("Crosshair", v -> {currentPage = PAGE.Crosshair;refreshButtons();}).setSecondColor(currentPage == PAGE.Crosshair ? getSecondColor() : getMainColor()).setDx(80).setWidth(80));
 
 
-        if (currentPage == PAGE.Hud) mainPage();
+        if (currentPage == PAGE.Main) mainPage();
 
         if (currentPage == PAGE.Crosshair) crosshairPage();
 
 
     }
 
+
+
     public void mainPage(){
+        buttons.add(new BooleanButton(ClientConfig.INSTANCE.toggleAim, "ToggleAim", value -> {ClientConfig.INSTANCE.toggleAim = value;ClientConfig.save();}));
         buttons.add(new BooleanButton(ClientConfig.INSTANCE.hud, "Hud", value -> {ClientConfig.INSTANCE.hud = value;ClientConfig.save();}));
         buttons.add(new BooleanButton(ClientConfig.INSTANCE.coolDown, "CoolDown", value -> {ClientConfig.INSTANCE.coolDown = value;ClientConfig.save();}));
         buttons.add(new BooleanButton(ClientConfig.INSTANCE.magIndicator, "Mag Indicator", value -> {ClientConfig.INSTANCE.magIndicator = value;ClientConfig.save();}));
         buttons.add(new BooleanButton(ClientConfig.INSTANCE.ammoCounter, "Ammo Counter", value -> {ClientConfig.INSTANCE.ammoCounter = value;ClientConfig.save();}));
+
+//        buttons.add(new Slider("mhX", ClientConfig.INSTANCE.mhX, -10, 10, v -> {ClientConfig.INSTANCE.mhX = v; ClientConfig.save();} ));
+//        buttons.add(new Slider("mhY", ClientConfig.INSTANCE.mhY, -10, 10, v -> {ClientConfig.INSTANCE.mhY = v; ClientConfig.save();} ));
+//        buttons.add(new Slider("mhZ", ClientConfig.INSTANCE.mhZ, -10, 10, v -> {ClientConfig.INSTANCE.mhZ = v; ClientConfig.save();} ));
+//        buttons.add(new Slider("mhRX", ClientConfig.INSTANCE.mhRX, -180, 180, v -> {ClientConfig.INSTANCE.mhRX = v; ClientConfig.save();} ));
+//        buttons.add(new Slider("mhRY", ClientConfig.INSTANCE.mhRY, -180, 180, v -> {ClientConfig.INSTANCE.mhRY = v; ClientConfig.save();} ));
 
     }
 

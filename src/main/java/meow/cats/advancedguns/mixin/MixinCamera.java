@@ -25,14 +25,16 @@ public abstract class MixinCamera {
         if (Weapons.zoom == null) {
             return original;
         }
+
         net.minecraft.world.item.ItemStack handStack = mc.player.getMainHandItem();
         if (handStack.getItem() instanceof GunItem gun)
-            if (gun.hasScope())
-                if (Weapons.zoom.active) {
+            if (Weapons.zoom.active) {
+                if (gun.hasScope()) {
                     return Weapons.zoom.getCurrentFov();
-
-
+                } else {
+                    if (gun.canAim()) return original - original / 6;
                 }
+            }
         return original;
     }
 }

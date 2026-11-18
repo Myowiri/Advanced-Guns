@@ -16,11 +16,29 @@ public class ModCommands {
                             true
                     ))
 
-                    .then(Commands.literal("reload")
+                    .then(Commands.literal("reload-server")
                             .executes(ctx -> {
                                 try {
                                     ServerConfig.load();
                                     Weapons.sync(ctx.getSource().getServer());
+
+                                    ctx.getSource().sendSuccess(() -> Component.literal("§a[Advanced Guns] Configuration reloaded successfully!"), true);
+                                    return 1;
+                                } catch (Exception e) {
+                                    ctx.getSource().sendFailure(Component.literal("§c[Advanced Guns] Failed to reload config: " + e.getMessage()));
+                                    e.printStackTrace();
+                                    return 0;
+                                }
+                            })
+                    )
+            );
+        });
+        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
+            dispatcher.register(Commands.literal("advanced-guns")
+                    .then(Commands.literal("reload-client")
+                            .executes(ctx -> {
+                                try {
+                                    ClientConfig.load();
 
                                     ctx.getSource().sendSuccess(() -> Component.literal("§a[Advanced Guns] Configuration reloaded successfully!"), true);
                                     return 1;
