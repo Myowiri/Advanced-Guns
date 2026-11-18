@@ -9,11 +9,13 @@ import meow.cats.advancedguns.items.MagazineItem;
 import meow.cats.advancedguns.items.ModItems;
 import meow.cats.advancedguns.misc.Zoom;
 import meow.cats.advancedguns.misc.sounds;
+import meow.cats.advancedguns.misc.HasMagazineProperty;
 import meow.cats.advancedguns.network.CrosshairStatePayload;
 import meow.cats.advancedguns.network.NameTagsStatePayload;
 import meow.cats.advancedguns.network.ReloadPayload;
 import meow.cats.advancedguns.network.ShootPayload;
 import meow.cats.advancedguns.projectile.ModEntities;
+
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.ModInitializer;
 
@@ -24,6 +26,7 @@ import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
+import net.minecraft.client.renderer.item.properties.conditional.ConditionalItemModelProperties;
 import net.minecraft.resources.Identifier;
 
 import net.minecraft.server.MinecraftServer;
@@ -45,7 +48,6 @@ public class Weapons implements ModInitializer, ClientModInitializer {
 	@Override
 	public void onInitialize() {
 		ServerConfig.load();
-
 		PayloadTypeRegistry.serverboundPlay().register(ReloadPayload.TYPE, ReloadPayload.CODEC);
 		PayloadTypeRegistry.serverboundPlay().register(ShootPayload.TYPE, ShootPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(CrosshairStatePayload.TYPE, CrosshairStatePayload.STREAM_CODEC);
@@ -106,30 +108,13 @@ public class Weapons implements ModInitializer, ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		ClientConfig.load();
-
-		ClientPlayNetworking.registerGlobalReceiver(CrosshairStatePayload.TYPE, (payload, context) -> {
-			context.client().execute(() -> {
-				Weapons.isCrosshairHidden = payload.hideCrosshair();
-			});
-		});
-
-		ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
-			Weapons.isCrosshairHidden = false;
-		});
-
-		ClientPlayNetworking.registerGlobalReceiver(NameTagsStatePayload.TYPE, (payload, context) -> {
-			context.client().execute(() -> {
-				Weapons.areNametagsHidden = payload.hideNameTags();
-			});
-		});
-
-		ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
-			Weapons.areNametagsHidden = false;
-		});
-
+		ConditionalItemModelProperties.ID_MAPPER.put(Identifier.fromNamespaceAndPath(Weapons.MOD_ID, "has_magazine"), HasMagazineProperty.CODEC);
+		ClientPlayNetworking.registerGlobalReceiver(CrosshairStatePayload.TYPE, (payload, context) -> {context.client().execute(() -> {Weapons.isCrosshairHidden = payload.hideCrosshair();});});
+		ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {Weapons.isCrosshairHidden = false;});
+		ClientPlayNetworking.registerGlobalReceiver(NameTagsStatePayload.TYPE, (payload, context) -> {context.client().execute(() -> {Weapons.areNametagsHidden = payload.hideNameTags();});});
+		ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {Weapons.areNametagsHidden = false;});
 		eventManager = new EventManager();
 		eventManager.init();
-
 		zoom = new Zoom();
 		EntityRendererRegistry.register(ModEntities.GRENADE, ThrownItemRenderer::new);
 		EntityRendererRegistry.register(ModEntities.BULLET, ThrownItemRenderer::new);

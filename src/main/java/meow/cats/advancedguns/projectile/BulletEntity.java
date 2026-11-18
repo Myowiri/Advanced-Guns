@@ -1,6 +1,6 @@
 package meow.cats.advancedguns.projectile;
 
-import meow.cats.advancedguns.items.GunItem;
+import meow.cats.Weapons;
 import meow.cats.advancedguns.network.LagCompensator;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -35,6 +35,8 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
+
 import java.util.Optional;
 import static meow.cats.advancedguns.items.ModItems.A762x39;
 import static meow.cats.advancedguns.items.ModItems.BULLET;
@@ -50,6 +52,7 @@ public class BulletEntity extends Projectile implements ItemSupplier {
     public boolean farCheck = false;
     public int farDis = 0;
     public float farDamage = 0;
+    public boolean сanPenetrateThroughLeaves = true;
     private static final EntityDataAccessor<ItemStack> CUSTOM_DATA_ITEM_STACK = SynchedEntityData.defineId(BulletEntity.class, EntityDataSerializers.ITEM_STACK);
     private Vec3 spawnPos = Vec3.ZERO;
 
@@ -70,22 +73,49 @@ public class BulletEntity extends Projectile implements ItemSupplier {
 
     }
 
-    public BulletEntity(Level level, LivingEntity owner, float speed, float damage, float gravity, float airResistance) {
+    public BulletEntity(Level level, LivingEntity owner, float speed, float damage, float gravity, float airResistance, boolean сanPenetrateThroughLeaves) {
         super(ModEntities.BULLET, level);
         this.setOwner(owner);
-        this.setPos(owner.getX(), owner.getEyeY() - 0.1, owner.getZ());
-        this.setDeltaMovement(owner.getLookAngle().scale(speed));
         this.baseDamage = damage;
         this.maxSpeed = speed;
-        Vec3 eyePos = new Vec3(owner.getX(), owner.getEyeY() - 0.1, owner.getZ());
-        this.setPos(eyePos);
-        this.spawnPos = eyePos;
         this.gravity = gravity;
         this.airResistance = airResistance;
+        this.сanPenetrateThroughLeaves = сanPenetrateThroughLeaves;
+
+        Vec3 eyePos = owner.getEyePosition();
+        Vec3 lookVec = owner.getLookAngle();
+
+        if (Weapons.zoom != null && Weapons.zoom.active) {
+            Vec3 centerPos = eyePos.add(lookVec.scale(0.45));
+            this.setPos(centerPos);
+            this.setOldPosAndRot();
+            this.spawnPos = centerPos;
+            this.setDeltaMovement(lookVec.scale(speed));
+        } else {
+            Vec3 rightVec = lookVec.cross(new Vec3(0, 1, 0)).normalize();
+            Vec3 upVec = rightVec.cross(lookVec).normalize();
+            double handSign = (owner.getMainArm() == net.minecraft.world.entity.HumanoidArm.RIGHT) ? 1.0 : -1.0;
+
+            Vec3 muzzlePos = eyePos
+                    .add(lookVec.scale(0.45))
+                    .add(rightVec.scale(0.15 * handSign))
+                    .add(upVec.scale(-0.05));
+
+            Vec3 targetPoint = eyePos.add(lookVec.scale(100.0));
+            Vec3 correctedDirection = targetPoint.subtract(muzzlePos).normalize();
+
+            this.setPos(muzzlePos);
+            this.setOldPosAndRot();
+            this.spawnPos = muzzlePos;
+            this.setDeltaMovement(correctedDirection.scale(speed));
+        }
+
         if (owner instanceof ServerPlayer serverPlayer) {
             this.shooterPingTicks = Math.min(20, Math.max(0, serverPlayer.connection.latency() / 50));
         }
     }
+
+
 
     public BulletEntity setAmmoOrBullet(Item ammo) {
         this.ammo = ammo;
@@ -112,8 +142,8 @@ public class BulletEntity extends Projectile implements ItemSupplier {
                 CollisionContext.of(this)
         ) {
             @Override
-            public net.minecraft.world.phys.shapes.VoxelShape getBlockShape(BlockState state, net.minecraft.world.level.BlockGetter level, BlockPos pos) {
-                if (state.is(BlockTags.LEAVES)) {
+            public VoxelShape getBlockShape(BlockState state, net.minecraft.world.level.BlockGetter level, BlockPos pos) {
+                if (state.is(BlockTags.LEAVES) && сanPenetrateThroughLeaves) {
                     return Shapes.empty();
                 }
                 return super.getBlockShape(state, level, pos);

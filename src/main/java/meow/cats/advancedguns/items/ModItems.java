@@ -29,7 +29,7 @@ public class ModItems {
             WEAPONS_GUNS_TAB_KEY,
             CreativeModeTab.builder(CreativeModeTab.Row.TOP, 0)
                     .title(Component.translatable("itemGroup." + Weapons.MOD_ID + ".weapons_tab"))
-                    .icon(() -> new ItemStack(ModItems.AK47))
+                    .icon(() -> new ItemStack(ModItems.GLOCK17))
                     .build()
     );
 
@@ -78,46 +78,46 @@ public class ModItems {
     private static final ResourceKey<Item> GLOCK_17_KEY = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Weapons.MOD_ID, "glock_17"));
     public static final Item GLOCK17 = Registry.register(BuiltInRegistries.ITEM, GLOCK_17_KEY,
             new GunItem(new Item.Properties().setId(GLOCK_17_KEY).stacksTo(1),
-                    () -> ServerConfig.glock17, false, GLOCK_MAG, ".9×19").forbidAim()
+                    () -> ServerConfig.glock17, false, GLOCK_MAG, ".9×19").setAimY(4.8648643f).setAimZ(2.4324322f).addMainHand(-0.8f, 0.15f, 1.06f, 17.0f, -7.3f)
     );
 
 
     private static final ResourceKey<Item> AK47_KEY = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Weapons.MOD_ID, "ak-47"));
     public static final Item AK47 = Registry.register(BuiltInRegistries.ITEM, AK47_KEY,
             new GunItem(new Item.Properties().setId(AK47_KEY).stacksTo(1),
-                    () -> ServerConfig.ak47, false, AK47_MAGAZINE, ".7,62x39").setAimY(9.6f).forbidAim().Auto().setDefaultMode(GunItem.Mode.Auto)
+                    () -> ServerConfig.ak47, false, AK47_MAGAZINE, ".7,62x39").setAimY(3.5135136f).setAimZ(7.7027016f).Auto().setDefaultMode(GunItem.Mode.Auto).addMainHand( -0.94594574f, -0.05f,  0.94594574f, 34.05406f, -9.56217f)
     );
 
     private static final ResourceKey<Item> M14_KEY = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Weapons.MOD_ID, "m14"));
     public static final Item M14 = Registry.register(BuiltInRegistries.ITEM, M14_KEY,
             new GunItem(new Item.Properties().setId(M14_KEY).stacksTo(1),
-                    () -> ServerConfig.m14, false, A762X51, ".7,62×51").setAimY(9.6f).setAmmo(A762X51).removeMag().forbidAim().Auto().setDefaultMode(GunItem.Mode.Auto)
+                    () -> ServerConfig.m14, false, A762X51, ".7,62×51").setAimY(4.75f).setAimZ(1.7567558f).setAmmo(A762X51).removeMag().Auto().setDefaultMode(GunItem.Mode.Auto).addMainHand(-0.94594574f, -0.08f, 0.8108101f, 31.621613f, -9.1f)
     );
     
 
     private static final ResourceKey<Item> AWM_KEY = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Weapons.MOD_ID, "awm"));
     public static final Item AWM = Registry.register(BuiltInRegistries.ITEM, AWM_KEY,
             new GunItem(new Item.Properties().setId(AWM_KEY).stacksTo(1),
-                    () -> ServerConfig.awm, true, AWM_MAGAZINE, ".7,62×67")
+                    () -> ServerConfig.awm, true, AWM_MAGAZINE, ".7,62×67").addMainHand( -0.94594574f, -0.05f,  0.94594574f, 34.05406f, -9.56217f)
     );
 
     private static final ResourceKey<Item> KAR98K_KEY = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Weapons.MOD_ID, "kar98k"));
     public static final Item KAR98K = Registry.register(BuiltInRegistries.ITEM, KAR98K_KEY,
             new GunItem(new Item.Properties().setId(KAR98K_KEY).stacksTo(1),
-                    () -> ServerConfig.kar98k, false, A792x57, ".7,92×57").setAmmo(A792x57).removeMag().forbidAim()
+                    () -> ServerConfig.kar98k, false, A792x57, ".7,92×57").setAimY(5.1351357f).setAimZ(0.94594574f).setAmmo(A792x57).removeMag().addMainHand(-0.94594574f, -0.1f, 0.8108101f, 34.05406f, -9.56217f)
     );
 
     private static final ResourceKey<Item> REMINGTON870_KEY = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Weapons.MOD_ID, "remington870"));
     
     public static final Item REMINGTON870 = Registry.register(BuiltInRegistries.ITEM, REMINGTON870_KEY,
             new GunItem(new Item.Properties().setId(REMINGTON870_KEY).stacksTo(1),
-                    () -> ServerConfig.remington870, false, A12GAUGE, ".12gauge").setAmmo(A12GAUGE).removeMag().forbidAim().setFarDamage(0.5f, 20)
+                    () -> ServerConfig.remington870, false, A12GAUGE, ".12gauge").setAimY(5.1351357f).setAimZ(0.94594574f).setAmmo(A12GAUGE).removeMag().setFarDamage(0.5f, 30).addMainHand(-0.69f, -0.05f, 0.5405407f, 24.324326f, 4.864868f)
     );
     
     private static final ResourceKey<Item> RPG_KEY = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Weapons.MOD_ID, "rpg"));
     public static final Item RPG = Registry.register(BuiltInRegistries.ITEM, RPG_KEY,
             new GunItem(new Item.Properties().setId(RPG_KEY).stacksTo(1),
-                    () -> ServerConfig.rpg, false, PG7V_ROCKET, ".rpg_rocket").shouldExplode().setAmmo(PG7V_ROCKET).setBullet(PG7V_ROCKET).removeMag().forbidAim()
+                    () -> ServerConfig.rpg, false, PG7V_ROCKET, ".rpg_rocket").shouldExplode().setAmmo(PG7V_ROCKET).setBullet(PG7V_ROCKET).removeMag().forbidAim().canNotPenetrateThroughLeaves().addMainHand(-0.8f, 0.15f, 0.75f, 17.0f, -7.3f)
     );
 
     private static final ResourceKey<Item> FRAG_GRENADE_KEY = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Weapons.MOD_ID, "frag_grenade"));

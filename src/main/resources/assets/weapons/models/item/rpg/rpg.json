@@ -451,6 +451,12 @@
 		}
 	],
 	"display": {
+		"firstperson_righthand": {
+			"scale": [1.54, 1.54, 1.54]
+		},
+		"firstperson_lefthand": {
+			"scale": [1.54, 1.54, 1.54]
+		},
 		"ground": {
 			"translation": [0, -1, 0],
 			"scale": [1.2, 1.2, 1.2]

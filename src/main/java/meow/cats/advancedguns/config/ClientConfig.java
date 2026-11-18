@@ -15,6 +15,7 @@ public class ClientConfig {
     private static final Path PATH = FabricLoader.getInstance().getConfigDir().resolve("advancedguns_client.json");
 
 
+    public boolean toggleAim = true;
     public boolean hud = true;
     public boolean ammoCounter = true;
     public boolean magIndicator = true;
@@ -30,6 +31,23 @@ public class ClientConfig {
     public int width = 1;
     public int padding = 1;
     public float scale = 1f;
+
+//    public boolean mhR = false;
+//    public float mhX = 0f;
+//    public float mhY = 0f;
+//    public float mhZ = 0f;
+//    public float mhRX = 0f;
+//    public float mhRY = 0f;
+//
+//    public float aimY = 0f;
+//    public float aimZ = 0f;
+
+//    public boolean MhR(){return mhR;}
+//    public float getMhX(){return mhX;}
+//    public float getMhY(){return mhY;}
+//    public float getMhZ(){return mhZ;}
+//    public float getMhRX(){return mhRX;}
+//    public float getMhRY(){return mhRY;}
 
 
 
