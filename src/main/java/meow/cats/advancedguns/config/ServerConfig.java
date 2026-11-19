@@ -20,6 +20,7 @@ public class ServerConfig {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final File CONFIG_FILE = new File(FabricLoader.getInstance().getConfigDir().toFile(), "advancedguns_server.json");
 
+    public static boolean reloadFromInventory = false;
     public static boolean disableCrosshair = false;
     public static boolean disableNameTags = false;
 
@@ -31,6 +32,7 @@ public class ServerConfig {
     public static WeaponConfig glock17 = new WeaponConfig(15f, 10f, 0.0245f, 0.99f, 17, 30, 10);
     public static WeaponConfig remington870 = new WeaponConfig(20f, 21f, 0.0245f, 0.99f, 7, 10, 18);
 
+    private Boolean reload_From_Inventory;
     private Boolean disable_crosshair;
     private Boolean disable_nametags;
 
@@ -79,7 +81,8 @@ public class ServerConfig {
             ServerConfig parsedConfig = GSON.fromJson(reader, ServerConfig.class);
             if (parsedConfig != null) {
                 if (parsedConfig.disable_crosshair != null) disableCrosshair = parsedConfig.disable_crosshair;
-                if (parsedConfig.disable_crosshair != null) disableNameTags = parsedConfig.disable_nametags;
+                if (parsedConfig.reload_From_Inventory != null) reloadFromInventory = parsedConfig.reload_From_Inventory;
+                if (parsedConfig.disable_nametags != null) disableNameTags = parsedConfig.disable_nametags;
                 if (parsedConfig.ak_47_config != null) ak47 = parsedConfig.ak_47_config;
                 if (parsedConfig.m14_config != null) m14 = parsedConfig.m14_config;
                 if (parsedConfig.rpg_launcher_config != null) rpg = parsedConfig.rpg_launcher_config;
@@ -97,6 +100,7 @@ public class ServerConfig {
     public static void save() {
         try (FileWriter writer = new FileWriter(CONFIG_FILE)) {
             ServerConfig configToSave = new ServerConfig();
+            configToSave.reload_From_Inventory = reloadFromInventory;
             configToSave.disable_crosshair = disableCrosshair;
             configToSave.disable_nametags = disableNameTags;
             configToSave.ak_47_config = ak47;

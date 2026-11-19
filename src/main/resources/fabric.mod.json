@@ -19,6 +19,9 @@
 		],
 		"client": [
 			"meow.cats.Weapons"
+		],
+		"modmenu": [
+			"meow.cats.advancedguns.gui.ModMenu"
 		]
 	},
 	"mixins": [

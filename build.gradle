@@ -8,6 +8,10 @@ repositories {
 	flatDir {
 		dirs "libs"
 	}
+	maven {
+		name = "Terraformers"
+		url = "https://maven.terraformersmc.com/"
+	}
 }
 
 dependencies {
@@ -15,9 +19,9 @@ dependencies {
 	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
-	implementation(name: "catguiapi-1.1.0", ext: "jar")
-	include(name: "catguiapi-1.1.0", ext: "jar")
-
+	implementation(name: "catguiapi-1.2.0", ext: "jar")
+	include(name: "catguiapi-1.2.0", ext: "jar")
+	implementation "com.terraformersmc:modmenu:21.0.0"
 }
 
 processResources {

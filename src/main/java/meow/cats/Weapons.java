@@ -10,10 +10,7 @@ import meow.cats.advancedguns.items.ModItems;
 import meow.cats.advancedguns.misc.Zoom;
 import meow.cats.advancedguns.misc.sounds;
 import meow.cats.advancedguns.misc.HasMagazineProperty;
-import meow.cats.advancedguns.network.CrosshairStatePayload;
-import meow.cats.advancedguns.network.NameTagsStatePayload;
-import meow.cats.advancedguns.network.ReloadPayload;
-import meow.cats.advancedguns.network.ShootPayload;
+import meow.cats.advancedguns.network.*;
 import meow.cats.advancedguns.projectile.ModEntities;
 
 import net.fabricmc.api.ClientModInitializer;
@@ -42,6 +39,7 @@ public class Weapons implements ModInitializer, ClientModInitializer {
 	public static Zoom zoom;
 	public static boolean isCrosshairHidden = false;
 	public static boolean areNametagsHidden = false;
+	public static boolean canReloadFromInventory = false;
 	public static EventManager eventManager;
 
 
@@ -52,6 +50,7 @@ public class Weapons implements ModInitializer, ClientModInitializer {
 		PayloadTypeRegistry.serverboundPlay().register(ShootPayload.TYPE, ShootPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(CrosshairStatePayload.TYPE, CrosshairStatePayload.STREAM_CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(NameTagsStatePayload.TYPE, NameTagsStatePayload.STREAM_CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(ReloadFromInventoryStatePayload.TYPE, ReloadFromInventoryStatePayload.STREAM_CODEC);
 
 		ServerPlayNetworking.registerGlobalReceiver(ReloadPayload.TYPE, (payload, context) -> {
 			context.server().execute(() -> {
@@ -84,6 +83,10 @@ public class Weapons implements ModInitializer, ClientModInitializer {
 			ServerPlayNetworking.send(handler.player, new NameTagsStatePayload(ServerConfig.disableNameTags));
 		});
 
+		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
+			ServerPlayNetworking.send(handler.player, new ReloadFromInventoryStatePayload(ServerConfig.reloadFromInventory));
+		});
+
 		ModCommands.register();
 		sounds.load();
 		ModItems.initialize();
@@ -97,6 +100,10 @@ public class Weapons implements ModInitializer, ClientModInitializer {
 		NameTagsStatePayload ng = new NameTagsStatePayload(ServerConfig.disableNameTags);
 		for (ServerPlayer player : server.getPlayerList().getPlayers()) {
 			ServerPlayNetworking.send(player, ng);
+		}
+		ReloadFromInventoryStatePayload rfi = new ReloadFromInventoryStatePayload(ServerConfig.reloadFromInventory);
+		for (ServerPlayer player : server.getPlayerList().getPlayers()) {
+			ServerPlayNetworking.send(player, rfi);
 		}
 	}
 
@@ -113,6 +120,8 @@ public class Weapons implements ModInitializer, ClientModInitializer {
 		ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {Weapons.isCrosshairHidden = false;});
 		ClientPlayNetworking.registerGlobalReceiver(NameTagsStatePayload.TYPE, (payload, context) -> {context.client().execute(() -> {Weapons.areNametagsHidden = payload.hideNameTags();});});
 		ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {Weapons.areNametagsHidden = false;});
+		ClientPlayNetworking.registerGlobalReceiver(ReloadFromInventoryStatePayload.TYPE, (payload, context) -> {context.client().execute(() -> {Weapons.canReloadFromInventory = payload.rfi();});});
+		ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {Weapons.canReloadFromInventory = false;});
 		eventManager = new EventManager();
 		eventManager.init();
 		zoom = new Zoom();

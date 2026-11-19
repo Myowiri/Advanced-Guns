@@ -1,5 +1,7 @@
 package meow.cats.advancedguns.items;
 
+import meow.cats.Weapons;
+import meow.cats.advancedguns.utils.InventoryUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
@@ -44,24 +46,41 @@ public class MagazineItem extends Item {
     public void addAmmo(Player player, ItemStack magazineStack) {
         if (player.getCooldowns().isOnCooldown(magazineStack.getItem().getDefaultInstance())) return;
         if (magazineStack.getCount() != 1) return;
-        ItemStack offhandStack = player.getOffhandItem();
-        if (!offhandStack.isEmpty() && offhandStack.getItem() == this.ammoItem) {
+        if (!Weapons.canReloadFromInventory){
+            ItemStack offhandStack = player.getOffhandItem();
+            if (!offhandStack.isEmpty() && offhandStack.getItem() == this.ammoItem) {
+                int currentAmmo = getAmmoCount(magazineStack);
+                if (currentAmmo >= this.maxAmmo) return;
+                currentAmmo += 1;
+                setAmmoCount(magazineStack, currentAmmo);
+                offhandStack.shrink(1);
+                if (offhandStack.isEmpty()) {
+                    player.setItemInHand(net.minecraft.world.InteractionHand.OFF_HAND, ItemStack.EMPTY);
+                }
+
+                if (player instanceof net.minecraft.server.level.ServerPlayer serverPlayer) {
+                    serverPlayer.inventoryMenu.broadcastChanges();
+                }
+                String messageText = currentAmmo + " / " + this.maxAmmo;
+                player.sendOverlayMessage(Component.literal(messageText));
+            }
+        } else {
+            AmmoItem requiredAmmo = (AmmoItem) this.ammoItem;
             int currentAmmo = getAmmoCount(magazineStack);
             if (currentAmmo >= this.maxAmmo) return;
-            currentAmmo += 1;
-            setAmmoCount(magazineStack, currentAmmo);
-            offhandStack.shrink(1);
-            if (offhandStack.isEmpty()) {
-                player.setItemInHand(net.minecraft.world.InteractionHand.OFF_HAND, ItemStack.EMPTY);
+            int ammoSlot = InventoryUtil.findBestSlot(player, requiredAmmo);
+            if (ammoSlot != -1){
+                ItemStack itemStack = player.getInventory().getItem(ammoSlot);
+                if (itemStack.getItem() instanceof AmmoItem) {
+                    itemStack.shrink(1);
+                    currentAmmo += 1;
+                    setAmmoCount(magazineStack, currentAmmo);
+                    String messageText = currentAmmo + " / " + this.maxAmmo;
+                    player.sendOverlayMessage(Component.literal(messageText));
+                }
             }
-
-            if (player instanceof net.minecraft.server.level.ServerPlayer serverPlayer) {
-                serverPlayer.inventoryMenu.broadcastChanges();
-            }
-            String messageText = currentAmmo + " / " + this.maxAmmo;
-            player.sendOverlayMessage(Component.literal(messageText));
         }
-        player.getCooldowns().addCooldown(magazineStack, 9);
+        player.getCooldowns().addCooldown(magazineStack, 2);
     }
 
     public void setAmmoCount(ItemStack stack, int count) {

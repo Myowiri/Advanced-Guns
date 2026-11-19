@@ -15,8 +15,9 @@ public class ClientConfig {
     private static final Path PATH = FabricLoader.getInstance().getConfigDir().resolve("advancedguns_client.json");
 
 
-    public boolean toggleAim = true;
+    public boolean toggleAim = false;
     public boolean hud = true;
+    public boolean hints = true;
     public boolean ammoCounter = true;
     public boolean magIndicator = true;
     public boolean coolDown = true;

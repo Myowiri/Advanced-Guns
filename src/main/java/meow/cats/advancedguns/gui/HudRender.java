@@ -3,8 +3,12 @@ package meow.cats.advancedguns.gui;
 import meow.cats.Weapons;
 import meow.cats.advancedguns.config.ClientConfig;
 import meow.cats.advancedguns.items.GunItem;
+import meow.cats.advancedguns.items.MagazineItem;
+import meow.cats.advancedguns.misc.ClientKeys;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import static meow.cats.advancedguns.utils.Utils.mc;
@@ -101,6 +105,7 @@ public class HudRender {
     public static void renderHud(GuiGraphicsExtractor graphics){
 
         if (!ClientConfig.INSTANCE.hud) return;
+        if (mc.gui.hud.getChat().isChatFocused()) return;
 
         ItemStack heldStack = mc.player.getMainHandItem();
 
@@ -124,6 +129,45 @@ public class HudRender {
             if (ClientConfig.INSTANCE.mode){graphics.text(mc.font, currentMode, getScreenWidth()-1-mc.font.width(currentMode) , getScreenHeight()-y, -1); y+=10;}
             if (ClientConfig.INSTANCE.coolDown){graphics.text(mc.font, coolDownString, getScreenWidth()-1-mc.font.width(coolDownString)  , getScreenHeight()-y, -1); y+=10;}
 
+            if (ClientConfig.INSTANCE.hints) {
+                y = 10;
+                Item reqItem = gun.isNoMag() ? gun.getAmmo() : gun.mag;
+
+                Component itemName = Component.translatable(reqItem.getDescriptionId());
+                Component keyName = ClientKeys.RELOAD_BIND.getTranslatedKeyMessage();
+
+                Component text = Weapons.canReloadFromInventory
+                        ? Component.translatable("hud.advancedguns.reload", keyName)
+                        : Component.translatable("hud.advancedguns.reload_offhand", itemName, keyName);
+                Component text2 = Component.translatable("hud.advancedguns.requires", itemName);
+
+                if (Weapons.canReloadFromInventory) {graphics.text(mc.font, text2.getString(), 1, getScreenHeight() - y, -1); y+=10;}
+                graphics.text(mc.font, text.getString(), 1, getScreenHeight() - y, -1);
+
+            }
+
+
+        }
+        if (heldStack.getItem() instanceof MagazineItem mag){
+            int ammoCount = mag.getAmmoCount(heldStack);
+            int maxAmmoCount = mag.getMaxAmmo();
+            String ammoCountText = ammoCount + "/" + maxAmmoCount;
+            int y = 10;
+            if (ClientConfig.INSTANCE.ammoCounter){graphics.text(mc.font, ammoCountText, getScreenWidth()-1-mc.font.width(ammoCountText) , getScreenHeight()-y, -1); y +=10;}
+
+            if (ClientConfig.INSTANCE.hints) {
+                y = 10;
+                Component ammoName = Component.translatable(mag.getAmmoItem().getDescriptionId());
+                Component keyName = ClientKeys.RELOAD_BIND.getTranslatedKeyMessage();
+
+                Component text = Weapons.canReloadFromInventory
+                        ? Component.translatable("hud.advancedguns.reload", keyName)
+                        : Component.translatable("hud.advancedguns.reload_offhand", ammoName, keyName);
+                Component text2 = Component.translatable("hud.advancedguns.requires", ammoName);
+                if (Weapons.canReloadFromInventory) { graphics.text(mc.font, text2.getString(), 1, getScreenHeight() - y, -1);y += 10;}
+                graphics.text(mc.font, text.getString(), 1, getScreenHeight() - y, -1);
+
+            }
         }
 
     }

@@ -4,6 +4,7 @@ import meow.cats.Weapons;
 import meow.cats.advancedguns.config.ServerConfig;
 import meow.cats.advancedguns.event.impl.ShootEvent;
 import meow.cats.advancedguns.projectile.BulletEntity;
+import meow.cats.advancedguns.utils.InventoryUtil;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -253,8 +254,9 @@ public class GunItem extends Item {
                 int ammoToSave = getAmmoCount(gunStack);
                 ItemStack magStack = new ItemStack(requiredMag);
                 requiredMag.setAmmoCount(magStack, ammoToSave);
-                if (freeSlot(player)) player.drop(magStack, true, Prediction.PREDICTED);
-                else player.drop(magStack, false, Prediction.PREDICTED);
+                if (!player.getInventory().add(magStack)) {
+                    player.drop(magStack, false, Prediction.PREDICTED);
+                }
 //            } else {
 //                AmmoItem requiredAmmo = (AmmoItem) this.ammo;
 //                int ammoToSave = getAmmoCount(gunStack);
@@ -289,30 +291,60 @@ public class GunItem extends Item {
             int neededAmmo = getMaxMag() - currentAmmo;
 
             if (neededAmmo > 0) {
-                ItemStack offhandStack = player.getOffhandItem();
-                if (!offhandStack.isEmpty() && offhandStack.getItem() == requiredAmmo) {
-                    int take = 1;
-                    offhandStack.shrink(1);
-                    if (offhandStack.isEmpty()) {
-                        player.setItemInHand(InteractionHand.OFF_HAND, ItemStack.EMPTY);
+                if (!Weapons.canReloadFromInventory){
+                    ItemStack offhandStack = player.getOffhandItem();
+                    if (!offhandStack.isEmpty() && offhandStack.getItem() == requiredAmmo) {
+                        int take = 1;
+                        offhandStack.shrink(take);
+                        if (offhandStack.isEmpty()) {
+                            player.setItemInHand(InteractionHand.OFF_HAND, ItemStack.EMPTY);
+                        }
+                        targetAmmo = currentAmmo + take;
+                        actionSuccessful = true;
                     }
-                    targetAmmo = currentAmmo + take;
-                    actionSuccessful = true;
+                } else {
+                    int ammoSlot = InventoryUtil.findBestSlot(player, requiredAmmo);
+                    if (ammoSlot != -1){
+                        int take = 1;
+                        ItemStack itemStack = player.getInventory().getItem(ammoSlot);
+                        if (itemStack.getItem() instanceof AmmoItem) {
+                            itemStack.shrink(take);
+                            targetAmmo = currentAmmo + take;
+                            actionSuccessful = true;
+
+                        }
+                    }
                 }
+
             }
         } else {
             MagazineItem requiredMag = (MagazineItem) this.mag;
-            ItemStack offhandStack = player.getOffhandItem();
 
-            if (!offhandStack.isEmpty() && offhandStack.getItem() == requiredMag) {
-                int a = requiredMag.getAmmoCount(offhandStack);
-                if (a >= 0) {
-                    offhandStack.shrink(1);
-                    if (offhandStack.isEmpty()) {
-                        player.setItemInHand(InteractionHand.OFF_HAND, ItemStack.EMPTY);
+            if (!Weapons.canReloadFromInventory) {
+                ItemStack offhandStack = player.getOffhandItem();
+                if (!offhandStack.isEmpty() && offhandStack.getItem() == requiredMag) {
+                    int a = requiredMag.getAmmoCount(offhandStack);
+                    if (a >= 0) {
+                        offhandStack.shrink(1);
+                        if (offhandStack.isEmpty()) {
+                            player.setItemInHand(InteractionHand.OFF_HAND, ItemStack.EMPTY);
+                        }
+                        targetAmmo = a;
+                        actionSuccessful = true;
                     }
-                    targetAmmo = a;
-                    actionSuccessful = true;
+                }
+            } else{
+                int magSlot = InventoryUtil.findBestSlot(player, requiredMag);
+                if (magSlot != -1){
+                    int take = 1;
+                    ItemStack itemStack = player.getInventory().getItem(magSlot);
+                    if (itemStack.getItem() instanceof MagazineItem) {
+                        int a = requiredMag.getAmmoCount(itemStack);
+                        itemStack.shrink(take);
+                        targetAmmo = a;
+                        actionSuccessful = true;
+
+                    }
                 }
             }
         }

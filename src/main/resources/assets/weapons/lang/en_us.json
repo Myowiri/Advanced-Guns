@@ -35,5 +35,21 @@
   "item.weapons.molotov": "Molotov",
   "item.weapons.smoke_grenade": "Smoke Grenade",
   "item.weapons.flashbang": "Flashbang",
-  "entity.weapons.grenade": "Grenade"
+  "entity.weapons.grenade": "Grenade",
+  "hud.advancedguns.reload": "Press [%1$s] to reload",
+  "hud.advancedguns.reload_offhand": "Put %1$s in off-hand and press [%2$s] to reload",
+  "hud.advancedguns.requires": "Requires: %1$s",
+  "gui.advancedguns.toogleaim": "Toggle Aim",
+  "gui.advancedguns.hud": "HUD",
+  "gui.advancedguns.hints": "Hints",
+  "gui.advancedguns.cooldown": "Cooldown Indicator",
+  "gui.advancedguns.magindicator": "Magazine Indicator",
+  "gui.advancedguns.ammocounter": "Ammo Counter",
+  "gui.advancedguns.style": "Style",
+  "gui.advancedguns.color": "Color",
+  "gui.advancedguns.centerdot": "Center Dot",
+  "gui.advancedguns.lines": "Lines",
+  "gui.advancedguns.slider": "Scale",
+  "gui.advancedguns.width": "Width",
+  "gui.advancedguns.padding": "Padding"
 }
