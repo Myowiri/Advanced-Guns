@@ -51,6 +51,12 @@ public class ModItems {
     private static final ResourceKey<Item> A9x19_KEY = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Weapons.MOD_ID, "9x19"));
     public static final Item A9x19 = Registry.register(BuiltInRegistries.ITEM, A9x19_KEY, new AmmoItem(new Item.Properties().setId(A9x19_KEY).stacksTo(50)));
 
+    private static final ResourceKey<Item> A50AE_KEY = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Weapons.MOD_ID, "50action_express"));
+    public static final Item A50AE = Registry.register(BuiltInRegistries.ITEM, A50AE_KEY, new AmmoItem(new Item.Properties().setId(A50AE_KEY).stacksTo(50)));
+
+    private static final ResourceKey<Item> A556x46_KEY = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Weapons.MOD_ID, "556x45"));
+    public static final Item A556x46 = Registry.register(BuiltInRegistries.ITEM, A556x46_KEY, new AmmoItem(new Item.Properties().setId(A556x46_KEY).stacksTo(50)));
+
     private static final ResourceKey<Item> A762x67_KEY = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Weapons.MOD_ID, "762x67"));
     public static final Item A762x67 = Registry.register(BuiltInRegistries.ITEM, A762x67_KEY, new AmmoItem(new Item.Properties().setId(A762x67_KEY).stacksTo(50)));
 
@@ -69,16 +75,28 @@ public class ModItems {
     private static final ResourceKey<Item> AK47_MAGAZINE_KEY = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Weapons.MOD_ID, "ak47-mag"));
     public static final Item AK47_MAGAZINE = Registry.register(BuiltInRegistries.ITEM, AK47_MAGAZINE_KEY, new MagazineItem(new Item.Properties().setId(AK47_MAGAZINE_KEY).stacksTo(1), 30));
 
+    private static final ResourceKey<Item> M16_MAGAZINE_KEY = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Weapons.MOD_ID, "m16-mag"));
+    public static final Item M16_MAGAZINE = Registry.register(BuiltInRegistries.ITEM, M16_MAGAZINE_KEY, new MagazineItem(new Item.Properties().setId(M16_MAGAZINE_KEY).stacksTo(1), 30).setAmmoItem(A556x46));
+
     private static final ResourceKey<Item> AWM_MAGAZINE_KEY = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Weapons.MOD_ID, "awm_mag"));
     public static final Item AWM_MAGAZINE = Registry.register(BuiltInRegistries.ITEM, AWM_MAGAZINE_KEY, new MagazineItem(new Item.Properties().setId(AWM_MAGAZINE_KEY).stacksTo(1), 5).setAmmoItem(A762x67));
 
     private static final ResourceKey<Item> GLOCK_MAG_KEY = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Weapons.MOD_ID, "glock_mag"));
     public static final Item GLOCK_MAG = Registry.register(BuiltInRegistries.ITEM, GLOCK_MAG_KEY, new MagazineItem(new Item.Properties().setId(GLOCK_MAG_KEY).stacksTo(1), 17).setAmmoItem(A9x19));
 
+    private static final ResourceKey<Item> DESERT_EAGLE_MAG_KEY = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Weapons.MOD_ID, "desert_eagle_mag"));
+    public static final Item DESERT_EAGLE_MAG = Registry.register(BuiltInRegistries.ITEM, DESERT_EAGLE_MAG_KEY, new MagazineItem(new Item.Properties().setId(DESERT_EAGLE_MAG_KEY).stacksTo(1), 8).setAmmoItem(A50AE));
+
     private static final ResourceKey<Item> GLOCK_17_KEY = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Weapons.MOD_ID, "glock_17"));
     public static final Item GLOCK17 = Registry.register(BuiltInRegistries.ITEM, GLOCK_17_KEY,
             new GunItem(new Item.Properties().setId(GLOCK_17_KEY).stacksTo(1),
                     () -> ServerConfig.glock17, false, GLOCK_MAG, ".9×19").setAimY(4.8648643f).setAimZ(2.4324322f).addMainHand(-0.8f, 0.15f, 1.06f, 17.0f, -7.3f)
+    );
+
+    private static final ResourceKey<Item> DESERT_EAGLE_KEY = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Weapons.MOD_ID, "desert_eagle"));
+    public static final Item DESERT_EAGLE = Registry.register(BuiltInRegistries.ITEM, DESERT_EAGLE_KEY,
+            new GunItem(new Item.Properties().setId(DESERT_EAGLE_KEY).stacksTo(1),
+                    () -> ServerConfig.desert_eagle, false, DESERT_EAGLE_MAG, ".50ac").setAimY(4.8648643f).setAimZ(2.4324322f).addMainHand(-0.8f, 0.15f, 1.06f, 17.0f, -7.3f)
     );
 
 
@@ -93,7 +111,12 @@ public class ModItems {
             new GunItem(new Item.Properties().setId(M14_KEY).stacksTo(1),
                     () -> ServerConfig.m14, false, A762X51, ".7,62×51").setAimY(4.75f).setAimZ(1.7567558f).setAmmo(A762X51).removeMag().Auto().setDefaultMode(GunItem.Mode.Auto).addMainHand(-0.94594574f, -0.08f, 0.8108101f, 31.621613f, -9.1f)
     );
-    
+
+    private static final ResourceKey<Item> M16_KEY = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Weapons.MOD_ID, "m16"));
+    public static final Item M16 = Registry.register(BuiltInRegistries.ITEM, M16_KEY,
+            new GunItem(new Item.Properties().setId(M16_KEY).stacksTo(1),
+                    () -> ServerConfig.m16, false, M16_MAGAZINE, ".5,56×45").setAimY(2.85f).setAimZ(3.5f).Auto().setDefaultMode(GunItem.Mode.Auto).addMainHand(-0.94594574f, -0.08f, 0.8108101f, 31.621613f, -9.1f)
+    );
 
     private static final ResourceKey<Item> AWM_KEY = ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(Weapons.MOD_ID, "awm"));
     public static final Item AWM = Registry.register(BuiltInRegistries.ITEM, AWM_KEY,
@@ -142,8 +165,10 @@ public class ModItems {
         );
         net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents.modifyOutputEvent(WEAPONS_GUNS_TAB_KEY).register(output -> {
             output.accept(GLOCK17);
+            output.accept(DESERT_EAGLE);
             output.accept(AK47);
             output.accept(M14);
+            output.accept(M16);
             output.accept(AWM);
             output.accept(KAR98K);
             output.accept(REMINGTON870);
@@ -154,15 +179,19 @@ public class ModItems {
             output.accept(BULLET);
 
             output.accept(A9x19);
+            output.accept(A50AE);
             output.accept(A762x39);
             output.accept(A762X51);
+            output.accept(A556x46);
             output.accept(A762x67);
             output.accept(A792x57);
             output.accept(A12GAUGE);
 
             output.accept(PG7V_ROCKET);
             output.accept(GLOCK_MAG);
+            output.accept(DESERT_EAGLE_MAG);
             output.accept(AK47_MAGAZINE);
+            output.accept(M16_MAGAZINE);
             output.accept(AWM_MAGAZINE);
 
             output.accept(FRAG_GRENADE);

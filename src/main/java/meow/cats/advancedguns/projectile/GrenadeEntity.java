@@ -21,6 +21,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.projectile.ItemSupplier;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
@@ -234,25 +235,27 @@ public class GrenadeEntity extends Projectile implements ItemSupplier {
             if (this.level() instanceof ServerLevel serverLevel) {
                 serverLevel.sendParticles(ParticleTypes.LAVA, this.getX(), this.getY() + 0.3, this.getZ(), 25, 1.5, 0.3, 1.5, 0.1);
             }
-        } else if (type == GrenadeType.FLASHBANG) {
+        }
+        else if (type == GrenadeType.FLASHBANG) {
             this.level().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.GENERIC_EXPLODE.value(), SoundSource.NEUTRAL, 2.5f, 1.9f);
             if (this.level() instanceof ServerLevel serverLevel) {
-//                serverLevel.sendParticles(ParticleTypes.FLASH., this.getX(), this.getY() + 0.2, this.getZ(), 2, 0, 0, 0, 0);
+                serverLevel.sendParticles(ParticleTypes.EXPLOSION, this.getX(), this.getY() + 0.2, this.getZ(), 1, 0, 0, 0, 0);
             }
-            AABB area = this.getBoundingBox().inflate(18.0);
+            double radius = 26.0;
+            AABB area = this.getBoundingBox().inflate(radius);
             List<LivingEntity> entities = this.level().getEntitiesOfClass(LivingEntity.class, area);
             for (LivingEntity target : entities) {
                 double dist = target.distanceTo(this);
-                if (dist <= 18.0 && hasLineOfSight(target)) {
+                if (dist <= radius && hasLineOfSight(target)) {
                     Vec3 lookVec = target.getLookAngle().normalize();
                     Vec3 toGrenade = this.position().subtract(target.getEyePosition()).normalize();
                     double dot = lookVec.dot(toGrenade);
-                    double distFactor = 1.0 - (dist / 18.0);
+                    double distFactor = 1.0 - (dist / radius);
                     int blindDuration;
                     if (dot > 0.3) {
-                        blindDuration = (int) (120 * distFactor * ((dot + 1.0) / 2.0));
+                        blindDuration = (int) (130 * distFactor * ((dot + 1.0) / 2.0));
                     } else {
-                        blindDuration = (int) (35 * distFactor);
+                        blindDuration = (int) (40 * distFactor);
                     }
                     if (blindDuration > 5) {
                         target.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, blindDuration, 1, false, false));
@@ -263,6 +266,9 @@ public class GrenadeEntity extends Projectile implements ItemSupplier {
         }
         this.discard();
     }
+
+
+
 
     private boolean hasLineOfSight(Entity target) {
         Vec3 start = this.position().add(0, 0.2, 0);

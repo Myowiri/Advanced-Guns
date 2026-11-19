@@ -34,9 +34,9 @@ public class Gui extends CatGui {
     @Override
     public void addButtons() {
 
-        buttons.add(new Button("Main", v -> {currentPage = PAGE.Main;refreshButtons();}).setSecondColor(currentPage == PAGE.Main ? getSecondColor() : getMainColor()).doNotSpace().setWidth(80));
+        buttons.add(new Button(Component.translatable("gui.advancedguns.main"), v -> {currentPage = PAGE.Main;refreshButtons();}).setSecondColor(currentPage == PAGE.Main ? getSecondColor() : getMainColor()).doNotSpace().setWidth(80));
 
-        buttons.add(new Button("Crosshair", v -> {currentPage = PAGE.Crosshair;refreshButtons();}).setSecondColor(currentPage == PAGE.Crosshair ? getSecondColor() : getMainColor()).setDx(80).setWidth(80));
+        buttons.add(new Button(Component.translatable("gui.advancedguns.crosshair"), v -> {currentPage = PAGE.Crosshair;refreshButtons();}).setSecondColor(currentPage == PAGE.Crosshair ? getSecondColor() : getMainColor()).setDx(80).setWidth(80));
 
 
         if (currentPage == PAGE.Main) mainPage();

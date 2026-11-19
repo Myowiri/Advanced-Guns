@@ -1,0 +1,14 @@
+{
+  "model": {
+    "type": "minecraft:condition",
+    "property": "weapons:has_magazine",
+    "on_true": {
+      "type": "minecraft:model",
+      "model": "weapons:item/m16/m16"
+    },
+    "on_false": {
+      "type": "minecraft:model",
+      "model": "weapons:item/m16/m16_no_mag"
+    }
+  }
+}
