@@ -11,9 +11,7 @@ You can customize all keybinds in the Controls menu under the Weapons category.
 
  • R — Reload weapon or magazine
 
- • Y — Check ammo / weapon status
-
- • G — Zoom / Aim (supported on AWM)
+ • Y — Check ammo / weapon 
 
 ### How to Reload
 
